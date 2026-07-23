@@ -1,0 +1,27 @@
+name: Échantillons GDD2 — consolidation mensuelle
+
+on:
+  schedule:
+    - cron: "0 6 2 * *"      # le 2 de chaque mois à 06:00 UTC (relevé du mois précédent)
+  workflow_dispatch:
+    inputs:
+      mois:
+        description: "Mois à consolider (YYYY-MM). Vide = mois précédent."
+        required: false
+
+jobs:
+  consolider:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install pandas openpyxl requests
+      - name: Générer et envoyer le consolidé (Outlook via Power Automate)
+        env:
+          WORKER_EXPORT_URL:   ${{ secrets.WORKER_EXPORT_URL }}
+          EXPORT_KEY:          ${{ secrets.EXPORT_KEY }}
+          PA_EMAIL_WEBHOOK_URL: ${{ secrets.PA_EMAIL_WEBHOOK_URL }}
+          MAIL_TO:             ${{ secrets.MAIL_TO }}
+          MAIL_CC:             ${{ secrets.MAIL_CC }}
+        run: python consolidation_mensuelle.py ${{ github.event.inputs.mois }}
