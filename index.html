@@ -3,493 +3,409 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>VINOM · Échantillons GDD2</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<title>VINOM — Portail commercial</title>
+<meta name="description" content="Point d'entrée unique VINOM : tarif, promotions, déstockage, agendas des tournées et mini-salons, BIB, échantillons, et calendrier feuille / fleur / fruit / racine de la semaine.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--blue:#1F4E79;--blue2:#2E75B6;--ink:#1c2530;--muted:#6b7683;--bg:#eef1f5;--card:#fff;--line:#dde3ea;
- --ok:#2e7d54;--warn:#b45309;--rouge:#7b2d3b;--blanc:#b8912a;--rose:#cf7ba0;--bulles:#7d8a5a;}
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%}
-header{position:sticky;top:0;z-index:30;background:var(--blue);color:#fff;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
-.brand b{font-size:16px;letter-spacing:.5px}.brand small{opacity:.85;font-size:12px}
-.wrap{max-width:900px;margin:0 auto;padding:12px 14px 120px}
-.setup{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 4px 2px;font-weight:600}
-.field select,.field input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff;color:var(--ink)}
-.field select:focus,.field input:focus,.search input:focus{outline:2px solid var(--blue2);outline-offset:1px}
-.needsel{border-color:var(--warn);background:#fff8ef}
-.setup.autre{background:#fff8ef;border:1px solid #f2d9b4;border-radius:12px;padding:11px 12px;margin-bottom:10px}
-/* Indispensable : .setup impose display:grid, qui l'emporte sur l'attribut hidden. */
-.setup.autre[hidden]{display:none}
-.setup.autre .autre-titre{grid-column:1/-1;margin:0 0 2px;font-size:15px;font-weight:700;color:var(--warn)}
-.setup.autre .autre-note{grid-column:1/-1;margin:0 0 6px;font-size:12.5px;color:var(--muted);line-height:1.35}
-.setup.autre .field-large{grid-column:1/-1}
-.setup.autre input{width:100%}
-.etape{grid-column:1/-1;display:block;margin:0 0 6px;font-size:17px;font-weight:700;color:var(--blue);line-height:1.25}
-#field-agent{grid-column:1/-1}
-.search{position:relative;margin-bottom:8px}
-.search input{width:100%;padding:12px 12px 12px 38px;border:1px solid var(--line);border-radius:10px;font-size:15px}
-.search svg{position:absolute;left:11px;top:12px;opacity:.5}
+:root{
+  --bg:#faf8f5; --paper:#ffffff; --ink:#1a1a1a; --ink-soft:#4a4a4a;
+  --ink-muted:#8a8a8a; --line:#e8e2d8; --line-strong:#c9bfae;
+  --bordeaux:#6b1e2c; --bordeaux-light:#f4e8ea;
+  --ocre:#b8771c; --ocre-light:#fbf1de;
+  --green:#2f6b3a; --green-light:#e8f1e9;
+  --blue:#1f4d7a; --blue-light:#e6eef7;
+  --violet:#6b3982; --violet-light:#f0e6f5;
+  --sarcelle:#12666e; --sarcelle-light:#e3f0f1;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 14px rgba(0,0,0,.08);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Inter',ui-sans-serif,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px 64px}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--bordeaux);outline-offset:3px;border-radius:4px}
 
-/* Récapitulatif avant envoi */
-#dlgRecap .dlg{max-width:520px}
-.rc-sous{font-size:13px;color:var(--muted);margin:2px 0 12px}
-.rc-corps{max-height:52vh;overflow:auto;border:1px solid var(--line);border-radius:10px}
-.rc-four{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--blue);
-         background:#f4f7fb;padding:7px 11px;border-bottom:1px solid var(--line);position:sticky;top:0}
-.rc-lig{display:flex;gap:10px;align-items:baseline;padding:8px 11px;border-bottom:1px solid var(--line)}
-.rc-lig:last-child{border-bottom:none}
-.rc-lig .rc-des{flex:1;font-size:13.5px;line-height:1.3}
-.rc-lig .rc-app{display:block;font-size:11.5px;color:var(--muted)}
-.rc-lig .rc-qte{font-weight:700;font-size:14px;white-space:nowrap}
-.rc-lig.rc-ht .rc-des::after{content:" · hors tarif";font-size:11px;color:var(--warn);font-weight:600}
-.rc-total{margin-top:11px;padding:9px 11px;background:#f4f7fb;border-radius:9px;font-size:14px;font-weight:700;text-align:center}
-/* Barre d'annulation après vidage */
-.annuler{position:fixed;left:12px;right:12px;bottom:78px;z-index:60;display:flex;align-items:center;gap:12px;
-         background:#1f3a56;color:#fff;border-radius:12px;padding:11px 14px;box-shadow:0 6px 20px rgba(0,0,0,.25);font-size:13.5px}
-.annuler span{flex:1}
-.annuler button{background:transparent;border:1px solid rgba(255,255,255,.55);color:#fff;border-radius:8px;
-                padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer}
-.majcat{font-size:12px;color:var(--muted);margin-bottom:8px}
-.majcat.alerte{color:var(--warn);font-weight:600}
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
-.chip{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer;user-select:none}
-.chip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
-.rowbar{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
-.rowbar select{flex:1;min-width:150px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;font-size:14px;background:#fff}
-.btn{border:0;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:600;cursor:pointer}
-.btn-ghost{background:#fff;border:1px solid var(--blue);color:var(--blue)}
-.btn-blue{background:var(--blue);color:#fff}
-.region{margin:18px 0 4px}
-.region>h2{margin:0 0 8px;font-size:16px;color:#fff;background:var(--blue);border-radius:10px;padding:9px 13px;display:flex;justify-content:space-between;align-items:center}
-.region>h2 span{font-size:12px;font-weight:600;opacity:.85}
-.dom{margin:10px 0 4px}
-.dom>h3{margin:0 0 6px;font-size:12.5px;color:var(--blue);letter-spacing:.3px;border-bottom:1.5px solid var(--blue2);padding-bottom:4px;display:flex;justify-content:space-between}
-.dom>h3 span{color:var(--muted);font-weight:600}
-.ref{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:7px}
-.ref.has{border-color:var(--blue2);box-shadow:0 0 0 2px rgba(46,117,182,.12)}
-.ref .info{flex:1;min-width:0}
-.ref .des{font-weight:600;font-size:14.5px;line-height:1.25}
-.ref .sub{font-size:12px;color:var(--muted);margin-top:2px}
-.ref .code{font-size:11px;color:#9aa4b0;font-variant-numeric:tabular-nums}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
-.d-Rouge{background:var(--rouge)}.d-Blanc{background:var(--blanc)}.d-Rosé{background:var(--rose)}.d-Bulles{background:var(--bulles)}.d-Spiritueux{background:#8a6d3b}.d-{background:#bbb}
-.step{display:flex;flex:none}
-.step button{width:38px;height:38px;border:1px solid var(--line);background:#fff;font-size:20px;line-height:1;cursor:pointer;color:var(--blue)}
-.step button:first-child{border-radius:10px 0 0 10px}.step button:last-child{border-radius:0 10px 10px 0}
-.step input{width:46px;height:38px;text-align:center;border:1px solid var(--line);border-left:0;border-right:0;font-size:16px;font-weight:600;-moz-appearance:textfield}
-.step input::-webkit-outer-spin-button,.step input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.step.act input{color:var(--blue);background:#f2f7fc}
-.empty{text-align:center;color:var(--muted);padding:40px 10px}
-.bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--line);box-shadow:0 -3px 12px rgba(0,0,0,.08);padding:10px 14px}
-.bottom .inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.tot{font-size:13px;color:var(--muted)}.tot b{font-size:20px;color:var(--ink);display:block;line-height:1}
-.btn-validate{background:var(--blue);color:#fff;border:0;border-radius:12px;padding:13px 20px;font-size:15px;font-weight:700;cursor:pointer}
-.btn-validate:disabled{background:#aab4c0;cursor:not-allowed}
-.ht{background:#fff8ef;border:1px solid #f2d9b4;border-radius:12px;padding:10px 12px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.ht .des{font-weight:600;font-size:14px}.ht small{color:var(--warn)}
-dialog{border:0;border-radius:16px;padding:0;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-dialog::backdrop{background:rgba(20,30,45,.45)}
-.dlg{padding:20px}.dlg h2{margin:0 0 4px;font-size:18px;color:var(--blue)}.dlg p{margin:6px 0;font-size:14px;color:var(--muted)}
-.dlg .field{margin:10px 0}.dlg .row{display:flex;gap:8px;margin-top:14px}
-.ok-ico{width:52px;height:52px;border-radius:50%;background:#e7f4ec;color:var(--ok);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 8px}
-.spin{width:44px;height:44px;border:4px solid #dbe4ee;border-top-color:var(--blue);border-radius:50%;margin:6px auto;animation:sp 1s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
+/* ---------- EN-TETE ---------- */
+header.top{padding:44px 0 28px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);font-weight:600}
+h1{font-family:var(--serif);font-size:44px;font-weight:600;line-height:1.05;margin:10px 0 8px;letter-spacing:-.01em}
+h1 .fin{color:var(--bordeaux)}
+.chapo{color:var(--ink-soft);font-size:15px;max-width:56ch}
+.jour-chip{display:inline-flex;align-items:center;gap:10px;margin-top:18px;padding:8px 14px 8px 10px;border-radius:100px;border:1px solid var(--line-strong);background:var(--paper);box-shadow:var(--shadow-sm);font-size:13px}
+.jour-chip .pastille{width:10px;height:10px;border-radius:50%;flex:none}
+.jour-chip strong{font-weight:600}
+.jour-chip .date{color:var(--ink-muted)}
 
-/* __LIEN_PORTAIL__ v1 (24/08/2026) — le logo VINOM ramène au portail depuis n'importe quelle page. */
-a.lien-portail{color:inherit;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s}
-a.lien-portail:hover,a.lien-portail:focus-visible{border-bottom-color:currentColor}
-a.lien-portail:focus-visible{outline:2px solid currentColor;outline-offset:3px}
-@media print{a.lien-portail{border-bottom:none}}
+/* ---------- CARTES ---------- */
+h2.section{font-family:var(--serif);font-size:26px;font-weight:600;margin:40px 0 4px}
+p.section-sous{color:var(--ink-muted);font-size:13px;margin-bottom:18px}
+.grille{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.carte{display:block;background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--accent,var(--bordeaux));border-radius:8px;padding:18px 20px;box-shadow:var(--shadow-sm);transition:box-shadow .15s ease,transform .15s ease,border-color .15s ease}
+.carte:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.carte .etiq{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.carte h3{font-family:var(--serif);font-size:22px;font-weight:600;margin:5px 0 5px;line-height:1.15}
+.carte p{font-size:13px;color:var(--ink-soft);line-height:1.5}
+
+.carte-liens{cursor:default}
+.carte-liens:hover{transform:none;box-shadow:var(--shadow-sm)}
+.carte-liens .souslien{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-top:9px;padding:9px 12px;border:1px solid var(--line);border-radius:7px;background:var(--paper);
+  font-size:13.5px;font-weight:600;text-decoration:none;color:var(--ink);transition:border-color .15s,background .15s}
+.carte-liens .souslien:hover{border-color:var(--accent);background:var(--accent-light,#fff)}
+.carte-liens .souslien em{font-style:normal;color:var(--accent);font-weight:700}
+.carte-liens .acces-note{margin-top:11px;font-size:13px;color:var(--ink-muted)}
+.carte-liens .etapes{margin:12px 0 4px;padding-left:19px;font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+.carte-liens .etapes li{padding:2px 0}
+.carte .cle{display:inline-block;margin-top:6px;font-size:11.5px;color:var(--ink-muted);border-left:2px solid var(--line-strong);padding-left:7px}
+.carte .fleche{display:inline-block;margin-top:10px;font-size:12px;font-weight:600;color:var(--accent)}
+.carte.action{grid-column:1/-1;background:linear-gradient(135deg,var(--accent-light) 0%,var(--paper) 72%)}
+
+/* ---------- SEMAINE LUNAIRE ---------- */
+.semaine{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.semaine-tete{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.semaine-tete h3{font-family:var(--serif);font-size:21px;font-weight:600}
+.semaine-tete .plage{font-size:12px;color:var(--ink-muted)}
+.jours{display:grid;grid-template-columns:repeat(7,1fr)}
+.jour{border-right:1px solid var(--line);padding:14px 10px 16px;min-height:132px;display:flex;flex-direction:column;gap:6px;background:var(--fond,transparent)}
+.jour:last-child{border-right:none}
+.jour.today{box-shadow:inset 0 3px 0 var(--teinte)}
+.jour .jn{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600}
+.jour.today .jn{color:var(--teinte)}
+.jour .jd{font-family:var(--serif);font-size:26px;font-weight:600;line-height:1}
+.jour .type{font-size:13px;font-weight:600;color:var(--teinte)}
+.jour .const{font-size:11px;color:var(--ink-muted)}
+.jour .bascule{font-size:11px;color:var(--ink-soft);border-top:1px dashed var(--line);padding-top:5px;margin-top:2px}
+.jour .alerte{font-size:10.5px;color:var(--ocre);font-weight:600;line-height:1.3}
+.legende{display:flex;flex-wrap:wrap;gap:6px 18px;padding:12px 20px;border-top:1px solid var(--line);background:var(--bg);font-size:12px;color:var(--ink-soft)}
+.legende span{display:inline-flex;align-items:center;gap:6px}
+.legende i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.note-methode{margin-top:14px;font-size:12px;color:var(--ink-muted);line-height:1.6}
+.note-methode a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
+
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-muted);line-height:1.7}
+
+@media (max-width:760px){
+  .wrap{padding:0 16px 48px}
+  h1{font-size:34px}
+  header.top{padding:30px 0 22px}
+  .grille{grid-template-columns:1fr}
+  .jours{grid-template-columns:1fr}
+  .jour{border-right:none;border-bottom:1px solid var(--line);min-height:0;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:4px 10px;padding:11px 16px}
+  .jour .jd{font-size:19px}
+  .jour .jn{min-width:78px}
+  .jour.today{box-shadow:inset 3px 0 0 var(--teinte)}
+  .jour .bascule,.jour .alerte{flex-basis:100%;border-top:none;padding-top:0;margin-top:0}
+}
+@media print{ .carte:hover{transform:none} body{background:#fff} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+
+/* ===== Écran de garde (même esprit que la page tarif) ===== */
+#gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:linear-gradient(160deg,#1F3A56 0%,#1F3A56 35%,#5C1A2B 75%,#7B2233 100%)}
+#gate .gate-card{background:#FBF9F5;padding:48px 40px;max-width:420px;width:100%;text-align:center;border-radius:4px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35)}
+#gate .gate-brand{font-family:'Cormorant Garamond',Georgia,serif;font-size:56px;letter-spacing:.2em;color:#1F3A56;font-weight:500;margin:0 0 4px}
+#gate .gate-subtitle{font-size:13px;color:#A98B45;letter-spacing:.25em;text-transform:uppercase;font-weight:500;margin:0}
+#gate .gate-rule{width:60px;height:1px;background:#A98B45;opacity:.5;margin:24px auto}
+#gate .gate-text{font-size:14px;color:#4A4A4A;margin:0 0 20px;line-height:1.5}
+#gate input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #D6CFC2;
+  border-radius:3px;background:#fff;margin-bottom:12px}
+#gate input:focus{outline:none;border-color:#1F3A56}
+#gate button{width:100%;padding:12px 14px;font-size:14px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:#fff;background:#1F3A56;border:0;border-radius:3px;cursor:pointer}
+#gate button:hover{background:#2B4E71}
+#gate .gate-error{color:#A0202F;font-size:13px;margin:10px 0 0}
+#gate .gate-footer{font-size:12px;color:#7A7466;margin:22px 0 0;line-height:1.6}
+#gate .gate-footer a{color:#1F3A56}
 </style>
 </head>
 <body>
-<header><div class="brand"><div><b><a class="lien-portail" href="https://nobullshitdrinks.github.io/vinom-portail/" title="Retour au portail VINOM" aria-label="Retour au portail VINOM">VINOM</a> · Échantillons GDD2</b><br><small>Relevé mensuel des échantillons prélevés</small></div></div></header>
-<div class="wrap">
-  <div class="setup">
-    <div class="field" id="field-agent"><label class="etape" for="agent">Première étape : trouve ton nom dans la liste</label><select id="agent"><option value="">— Choisir —</option></select></div>
-    <div class="field"><label for="mois">Mois du relevé</label><input type="month" id="mois"></div>
-  </div>
-  <div class="setup autre" id="bloc_autre" hidden>
-    <p class="autre-titre">Absent de la liste ? Renseigne ton identité ici</p><p class="autre-note">Sans ces trois informations, Yasmina ne peut pas rattacher le relevé ni réclamer les avoirs aux domaines.</p>
-    <div class="field"><label for="a_prenom">Prénom</label><input type="text" id="a_prenom" autocomplete="given-name" placeholder="Prénom"></div>
-    <div class="field"><label for="a_nom">Nom</label><input type="text" id="a_nom" autocomplete="family-name" placeholder="Nom"></div>
-    <div class="field field-large"><label for="a_mail">E-mail</label><input type="email" id="a_mail" autocomplete="email" inputmode="email" placeholder="prenom.nom@exemple.fr"></div>
-  </div>
-  <div class="search">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
-    <input id="q" placeholder="Rechercher un vin, un domaine, une référence…">
-  </div>
-  <div class="majcat" id="majcat" hidden></div>
-  <div class="chips" id="chips">
-    <div class="chip on" data-c="">Toutes</div><div class="chip" data-c="Rouge">Rouges</div>
-    <div class="chip" data-c="Blanc">Blancs</div><div class="chip" data-c="Rosé">Rosés</div><div class="chip" data-c="Bulles">Bulles</div><div class="chip" data-c="Spiritueux">Spiritueux</div>
-  </div>
-  <div class="rowbar">
-    <select id="regionfilter"><option value="">Toutes les régions</option></select>
-    <select id="fourfilter"><option value="">Tous les domaines</option></select>
-  </div>
-  <div class="rowbar">
-    <button class="btn btn-ghost" id="addht">+ Référence hors tarif</button>
-    <button class="btn btn-ghost" id="reset">Vider le relevé</button>
-  </div>
-  <div id="htlist"></div>
-  <div id="list"></div>
-</div>
-<div class="bottom"><div class="inner">
-  <div class="tot"><b id="totbt">0</b> bouteille(s) · <span id="totref">0</span> référence(s)</div>
-  <button class="btn-validate" id="validate" disabled>Valider les échantillons</button>
-</div></div>
 
-<dialog id="dlgHT"><div class="dlg">
-  <h2>Référence hors tarif</h2><p>Pour un vin prélevé mais absent du tarif imprimé.</p>
-  <div class="field"><label>Désignation du vin *</label><input id="ht_des" placeholder="Ex. : Château X 2022"></div>
-  <div class="field"><label>Domaine / fournisseur (si connu)</label><input id="ht_four" placeholder="Ex. : Domaine Y"></div>
-  <div class="field"><label>Quantité *</label><input id="ht_qte" type="number" min="1" value="1"></div>
-  <div class="row"><button class="btn btn-ghost" id="ht_cancel" style="flex:1">Annuler</button><button class="btn btn-blue" id="ht_add" style="flex:1">Ajouter</button></div>
-</div></dialog>
-<dialog id="dlgRecap"><div class="dlg">
-  <h2 id="rc_titre">Vérifiez avant d'envoyer</h2>
-  <p class="rc-sous" id="rc_sous"></p>
-  <div class="rc-corps" id="rc_corps"></div>
-  <div class="rc-total" id="rc_total"></div>
-  <div class="row" style="flex-direction:column;gap:8px;margin-top:12px">
-    <button class="btn btn-blue" id="rc_ok" style="width:100%">Confirmer et envoyer</button>
-    <button class="btn btn-ghost" id="rc_edit" style="width:100%">Corriger le relevé</button>
+<!-- =========== ÉCRAN DE GARDE =========== -->
+<div id="gate">
+  <div class="gate-card">
+    <p class="gate-brand">VINOM</p>
+    <p class="gate-subtitle">Espace commercial</p>
+    <div class="gate-rule"></div>
+    <p class="gate-text">Accès réservé à l'équipe et aux agents VINOM.</p>
+    <form id="gate-form" autocomplete="off">
+      <input type="password" id="gate-pwd" placeholder="Code d'accès" autocomplete="off">
+      <button type="submit">Entrer</button>
+    </form>
+    <p id="gate-error" class="gate-error" hidden>Code incorrect.</p>
+    <p class="gate-footer">Code à demander à votre référent VINOM<br>ou à <a href="mailto:vins@vinom.fr">vins@vinom.fr</a></p>
   </div>
-</div></dialog>
-<dialog id="dlgSend"><div class="dlg" style="text-align:center"><div class="spin"></div><p id="send_msg">Envoi du relevé…</p></div></dialog>
-<dialog id="dlgOK"><div class="dlg" style="text-align:center">
-  <div class="ok-ico">✓</div><h2 id="ok_title">Relevé envoyé</h2><p id="ok_msg"></p>
-  <div class="row" style="flex-direction:column" id="ok_actions"></div>
-</div></dialog>
+</div>
+
+<div class="wrap" id="wrap" hidden>
+
+<header class="top">
+  <p class="eyebrow">VINOM · espace commercial</p>
+  <h1>Tous les outils,<br><span class="fin">une seule adresse.</span></h1>
+  <p class="chapo">Tarif, promotions, déstockage, plannings des tournées et mini-salons, argumentaire BIB, demandes d'échantillons. Mettez cette page en favori sur votre téléphone : le reste s'ouvre d'ici.</p>
+  <div class="jour-chip" id="chip" hidden>
+    <span class="pastille" id="chip-pastille"></span>
+    <span><strong id="chip-type"></strong> <span id="chip-const"></span></span>
+    <span class="date" id="chip-date"></span>
+  </div>
+</header>
+
+<h2 class="section">Les documents</h2>
+<p class="section-sous">Tous mis à jour en continu — inutile de conserver une copie, ouvrez toujours le lien.</p>
+<div class="grille">
+
+  <a class="carte" style="--accent:var(--bordeaux)" href="https://nobullshitdrinks.github.io/vinom-tarif/">
+    <span class="etiq">Référence</span>
+    <h3>Tarif Professionnel</h3>
+    <p>Le tarif VINOM en vigueur, avec recherche et filtres. La base de toute proposition client.</p>
+    <span class="fleche">Ouvrir →</span>
+  </a>
+
+  <div class="carte carte-liens" style="--accent:var(--sarcelle)">
+    <span class="etiq">SharePoint</span>
+    <h3>Cartes VINOM</h3>
+    <p>Les documents de référence du réseau. <span class="cle">Connexion Microsoft 365 requise</span></p>
+    <a class="souslien" href="https://sfrbt1009862.sharepoint.com/:f:/g/vinom/IgAHelnIjNhsRJ0-mHeGNC1GAR13o2LHTmBHlVbwvICA1-I?e=7EANcD" target="_blank" rel="noopener">
+      Cartes des vins par établissement <em>→</em></a>
+    <a class="souslien" href="https://sfrbt1009862.sharepoint.com/:b:/g/vinom/IQBeLvCq2BNfSZ7Vg2beaDbbAduDxDM_7YT9mmxIDNrlxTI?e=lNgkCV" target="_blank" rel="noopener">
+      Nos maisons et domaines partenaires <em>→</em></a>
+  </div>
+
+  <a class="carte" style="--accent:var(--green)" href="https://nobullshitdrinks.github.io/vinom-challenges/">
+    <span class="etiq">Primes fournisseurs</span>
+    <h3>Challenges et incentives</h3>
+    <p>Les opérations fournisseurs qui rapportent : primes par nouveau client, cartes cadeaux, paliers. Conditions et dates d'encaissement.</p>
+    <span class="fleche">Ouvrir →</span>
+  </a>
+
+  <a class="carte" style="--accent:var(--bordeaux)" href="https://nobullshitdrinks.github.io/vinom-promos/">
+    <span class="etiq">Ce mois-ci</span>
+    <h3>Promotions en cours</h3>
+    <p>Vue agenda des offres fournisseurs : mécanique, prix nets, dates de validité, points de vigilance.</p>
+    <span class="fleche">Ouvrir →</span>
+  </a>
+
+  <a class="carte" style="--accent:var(--ocre)" href="https://nobullshitdrinks.github.io/vinom-promos/#destockage">
+    <span class="etiq">Stocks à écouler</span>
+    <h3>Déstockage</h3>
+    <p>Fins de millésimes et fins de loge, triables par fournisseur. Dans la limite des stocks.</p>
+    <span class="fleche">Ouvrir →</span>
+  </a>
+
+  <a class="carte" style="--accent:var(--blue)" href="https://nobullshitdrinks.github.io/vinom-events/">
+    <span class="etiq">Trois prochains mois</span>
+    <h3>Agenda rapproché</h3>
+    <p>Tournées vigneron, mini-salons, master class et soirées à court terme. C'est ici qu'on se positionne.</p>
+    <span class="fleche">Ouvrir →</span>
+  </a>
+
+  <a class="carte" style="--accent:var(--blue)" href="https://nobullshitdrinks.github.io/vinom-events/agenda-6mois.html">
+    <span class="etiq">Six prochains mois</span>
+    <h3>Agenda long</h3>
+    <p>La même chose à six mois, avec vue créneaux et export vers votre agenda.</p>
+    <span class="fleche">Ouvrir →</span>
+  </a>
+
+  <a class="carte" style="--accent:var(--green)" href="https://nobullshitdrinks.github.io/vinom-bib/">
+    <span class="etiq">Argumentaire</span>
+    <h3>Vendre mieux les BIB</h3>
+    <p>Le flyer CHR : arguments de marge, conservation, service au verre. À montrer en rendez-vous.</p>
+    <span class="fleche">Ouvrir →</span>
+  </a>
+
+  <a class="carte" style="--accent:var(--violet)" href="https://nobullshitdrinks.github.io/vinom-echantillons/">
+    <span class="etiq">Saisie</span>
+    <h3>Échantillons</h3>
+    <p>Déclarez les bouteilles prises en échantillon, par région puis par domaine. Deux minutes, depuis le téléphone.</p>
+    <span class="fleche">Ouvrir →</span>
+  </a>
+
+  <div class="carte carte-liens action" style="--accent:var(--blue);--accent-light:var(--blue-light)">
+    <span class="etiq">Carte géographique</span>
+    <h3>Vos clients et vos prospects sur une carte</h3>
+    <p>Visualisez votre secteur d'un coup d'œil : où sont vos clients, quels prospects se trouvent juste à côté, et comment enchaîner vos rendez-vous sans faire trois fois le même trajet. De quoi préparer une tournée en quelques minutes.</p>
+    <p class="acces-note">Aucun compte à créer, l'accès se fait par un code envoyé sur votre adresse e-mail :</p>
+    <ol class="etapes">
+      <li>Saisissez votre adresse e-mail</li>
+      <li>Vous recevez un code à 6 chiffres envoyé par Cloudflare — <strong>pensez à regarder vos spams</strong></li>
+      <li>Vous arrivez sur la carte</li>
+    </ol>
+    <a class="souslien" href="https://vinom-carte.pages.dev/" target="_blank" rel="noopener">Ouvrir la carte <em>→</em></a>
+  </div>
+
+  <a class="carte action" style="--accent:var(--blue);--accent-light:var(--blue-light)" href="https://nobullshitdrinks.github.io/vinom-events/#signal">
+    <span class="etiq">À votre initiative</span>
+    <h3>Proposer une tournée ou une venue de vigneron</h3>
+    <p>Un domaine que vous voulez faire venir, un client qui mérite une master class, une date de mini-salon à caler ? Remplissez les cinq champs, la demande arrive directement.</p>
+    <span class="fleche">Faire une demande →</span>
+  </a>
+
+</div>
+
+<h2 class="section">La semaine en jours feuille, fleur, fruit, racine</h2>
+<p class="section-sous">Pour caler une dégustation client au bon moment. Les jours fruit et fleur sont réputés les plus favorables ; les jours feuille et racine, les moins.</p>
+
+<section class="semaine">
+  <div class="semaine-tete">
+    <h3 id="sem-titre">Semaine en cours</h3>
+    <span class="plage" id="sem-plage"></span>
+  </div>
+  <div class="jours" id="jours"></div>
+  <div class="legende">
+    <span><i style="background:var(--bordeaux)"></i> Fruit — constellations de feu</span>
+    <span><i style="background:var(--violet)"></i> Fleur — constellations d'air</span>
+    <span><i style="background:var(--green)"></i> Feuille — constellations d'eau</span>
+    <span><i style="background:var(--ocre)"></i> Racine — constellations de terre</span>
+  </div>
+</section>
+
+<p class="note-methode">
+  <strong>Méthode.</strong> Position de la Lune calculée par éphéméride JPL DE421, rapportée aux limites de constellations de l'Union astronomique internationale projetées sur l'écliptique — c'est le principe sidéral des travaux de Maria Thun, repris par le
+  <a href="https://www.bio-dynamie.org/vivre-la-biodynamie/calendrier-biodynamique/" target="_blank" rel="noopener">calendrier biodynamique du MABD</a>.
+  Le Serpentaire (Ophiuchus) est rattaché au Scorpion, donc aux jours feuille.
+  Les nœuds lunaires, périgées et apogées sont signalés : ce sont des journées où les calendriers biodynamiques recommandent de s'abstenir.
+  Recoupé le 3 août 2026 avec <a href="https://jardinezaveclalune.fr/mois/2026-08" target="_blank" rel="noopener">jardinezaveclalune.fr</a> : nœuds et apsides identiques à la minute, type de jour identique sur 30 jours sur 31 en août. Les heures de bascule peuvent différer de quelques heures d'un calendrier à l'autre, les limites de constellations retenues n'étant pas les mêmes partout. Horaires en heure de Paris.
+</p>
+
+<footer>
+  Portail VINOM · v1.3 · 2 octobre 2026 — Aqua Architect Advisory pour VINOM SAS, 13 bd des Batignolles, 75008 Paris.<br>
+  Une page manque, un lien est cassé, un document est à ajouter ? Écrivez à <a href="mailto:a.durand@vinom.fr" style="color:var(--blue)">a.durand@vinom.fr</a>.<br>
+  Données lunaires précalculées jusqu'au 1<sup>er</sup> mars 2028.
+</footer>
+
+</div>
+<script>
+/* ===== Écran de garde — code DISTINCT de celui du tarif ===== */
+const PORTAIL_CODE = 'portail2026';          // à changer ici, et ici seulement
+const PORTAIL_KEY  = 'vinom_portail_unlocked';
+
+function ouvrirPortail(){
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('wrap').hidden = false;
+}
+(function verifierAcces(){
+  if (sessionStorage.getItem(PORTAIL_KEY) === 'yes') { ouvrirPortail(); return; }
+  const code = new URLSearchParams(location.search).get('code');
+  if (code === PORTAIL_CODE) {
+    sessionStorage.setItem(PORTAIL_KEY,'yes');
+    const u = new URL(location); u.searchParams.delete('code');
+    history.replaceState({}, '', u);
+    ouvrirPortail(); return;
+  }
+  document.getElementById('gate-form').addEventListener('submit', e => {
+    e.preventDefault();
+    if (document.getElementById('gate-pwd').value.trim() === PORTAIL_CODE) {
+      sessionStorage.setItem(PORTAIL_KEY,'yes');
+      ouvrirPortail();
+    } else {
+      document.getElementById('gate-error').hidden = false;
+      document.getElementById('gate-pwd').select();
+    }
+  });
+  document.getElementById('gate-pwd').focus();
+})();
+</script>
 
 <script>
-// Catalogue de repli, généré depuis le tarif VINOM du 24/08/2026 (530 références).
-// Au chargement, la page relit tarif.json pour rester alignée sur le tarif en vigueur.
-let REFERENCES = [{"code":"26700523","des":"Voltis Floréal","dom":"Bal du Roi","app":"Vin de France","coul":"Blanc","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"BALCHA23","des":"Bal du Roi - Chardonnay","dom":"Bal du Roi","app":"Ile de France IGP","coul":"Blanc","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"BDRCHE24","des":"Le Grand Lever - Chenin Blanc","dom":"Domaine la Bouche du Roi","app":"Ile de France IGP","coul":"Blanc","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"BDRCHA23","des":"Les Louis d'Or - Chardonnay","dom":"Domaine la Bouche du Roi","app":"Ile de France IGP","coul":"Blanc","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"26701923","des":"La Voie Royale - Chardonnay","dom":"Domaine Bal du Roi","app":"Ile de France IGP","coul":"Blanc","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"26702023","des":"La Voie Royale - Chenin Blanc","dom":"Domaine Bal du Roi","app":"Ile de France IGP","coul":"Blanc","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"BALMN22","des":"Bal du Roi - Merlot N°27","dom":"Famille Ameline Vallée","app":"Ile de France IGP","coul":"Rouge","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"BALPNV22","des":"Bal du Roi - Pinot Noir N°26","dom":"Famille Vallée","app":"Ile de France IGP","coul":"Rouge","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"BDRMER22","des":"Les Trois Corneilles - Merlot","dom":"Domaine la Bouche du Roi","app":"Ile de France IGP","coul":"Rouge","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"BDRCF22","des":"Coquilles - Cabernet Franc","dom":"Domaine la Bouche du Roi","app":"Ile de France IGP","coul":"Rouge","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"BDRPN24","des":"Abondance - Pinot Noir","dom":"Domaine la Bouche du Roi","app":"Ile de France IGP","coul":"Rouge","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"26701823","des":"La Voie Royale - Pinot Noir","dom":"Domaine Bal du Roi","app":"Ile de France IGP","coul":"Rouge","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"26701023","des":"La Voie Royale - Merlot","dom":"Domaine Bal du Roi","app":"Ile de France IGP","coul":"Rouge","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"WPJP18","des":"Jugement de Paris","dom":"Winerie Parisienne","app":"Vin de France","coul":"Rouge","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"26701120","des":"Chai de la Tour Eiffel","dom":"Winerie Parisienne","app":"Vin de France","coul":"Rouge","nf":267,"four":"DOMAINE LA BOUCHE DU ROI","reg":"Île-de-France"},{"code":"42300123","des":"Chardonnay","dom":"Domaine Rolet","app":"Arbois","coul":"Blanc","nf":423,"four":"DOMAINE ROLET","reg":"Jura"},{"code":"42300224","des":"Savagnin Ouillé","dom":"Domaine Rolet","app":"Arbois","coul":"Blanc","nf":423,"four":"DOMAINE ROLET","reg":"Jura"},{"code":"42300318","des":"Tradition - oxydatif","dom":"Domaine Rolet","app":"Arbois","coul":"Blanc","nf":423,"four":"DOMAINE ROLET","reg":"Jura"},{"code":"42300823","des":"Trousseau","dom":"Domaine Rolet","app":"Arbois","coul":"Rouge","nf":423,"four":"DOMAINE ROLET","reg":"Jura"},{"code":"12000924","des":"Sylvaner Cuvée Fusion","dom":"Gustave Lorentz","app":"Alsace","coul":"Blanc","nf":120,"four":"GUSTAVE LORENTZ","reg":"Alsace"},{"code":"12000319","des":"Riesling Cuvée Particulière","dom":"Gustave Lorentz","app":"Alsace","coul":"Blanc","nf":120,"four":"GUSTAVE LORENTZ","reg":"Alsace"},{"code":"12000523","des":"Riesling Evidence","dom":"Gustave Lorentz","app":"Alsace","coul":"Blanc","nf":120,"four":"GUSTAVE LORENTZ","reg":"Alsace"},{"code":"12000521B","des":"Riesling Grand Cru Altenberg","dom":"Gustave Lorentz","app":"Alsace","coul":"Blanc","nf":120,"four":"GUSTAVE LORENTZ","reg":"Alsace"},{"code":"12000218","des":"Gewurtztraminer Cuvée Particulière","dom":"Gustave Lorentz","app":"Alsace","coul":"Blanc","nf":120,"four":"GUSTAVE LORENTZ","reg":"Alsace"},{"code":"12000418","des":"Gewurtztraminer Vendanges Tardives","dom":"Gustave Lorentz","app":"Alsace","coul":"Blanc","nf":120,"four":"GUSTAVE LORENTZ","reg":"Alsace"},{"code":"12000823","des":"Pinot Noir Evidence","dom":"Gustave Lorentz","app":"Alsace","coul":"Rouge","nf":120,"four":"GUSTAVE LORENTZ","reg":"Alsace"},{"code":"13200324","des":"Cuvée Clémence","dom":"Cheval Quancard","app":"Entre Deux Mers","coul":"Blanc","nf":132,"four":"CHEVAL QUANCARD","reg":"Bordeaux"},{"code":"13703124","des":"Adichats - TOUT","dom":"Vignerons de Tutiac","app":"Blaye - Côtes de Bordeaux","coul":"Blanc","nf":137,"four":"LES VIGNERONS DE TUTIAC","reg":"Bordeaux"},{"code":"13700222","des":"Closerie La Mahèle","dom":"Château la Mahèle","app":"Bordeaux","coul":"Rouge","nf":137,"four":"LES VIGNERONS DE TUTIAC","reg":"Bordeaux"},{"code":"46000423","des":"Cheval Noir","dom":"Mahler Besse","app":"Bordeaux","coul":"Rouge","nf":460,"four":"MAHLER BESSE MAD","reg":"Bordeaux"},{"code":"13200118","des":"Château de Bordes Quancard","dom":"","app":"Bordeaux","coul":"Rouge","nf":132,"four":"CHEVAL QUANCARD","reg":"Bordeaux"},{"code":"13200922","des":"Cuvée Réserve","dom":"Cheval Quancard","app":"Bordeaux","coul":"Rouge","nf":132,"four":"CHEVAL QUANCARD","reg":"Bordeaux"},{"code":"13701022","des":"Lieu Dit Verdot","dom":"Vignerons de Tutiac","app":"Bordeaux","coul":"Rouge","nf":137,"four":"LES VIGNERONS DE TUTIAC","reg":"Bordeaux"},{"code":"44500114","des":"Grand Vin","dom":"Château Reignac","app":"Bordeaux Supérieur","coul":"Rouge","nf":445,"four":"CHATEAU DE REIGNAC","reg":"Bordeaux"},{"code":"13700323","des":"Château La Grosse Pierre","dom":"","app":"Blaye - Côtes de Bordeaux","coul":"Rouge","nf":137,"four":"LES VIGNERONS DE TUTIAC","reg":"Bordeaux"},{"code":"13703020","des":"le Daron","dom":"Vignerons de Tutiac","app":"Blaye - Côtes de Bordeaux","coul":"Rouge","nf":137,"four":"LES VIGNERONS DE TUTIAC","reg":"Bordeaux"},{"code":"13201421","des":"Le Carillon","dom":"Château Le Virou","app":"Blaye - Côtes de Bordeaux","coul":"Rouge","nf":132,"four":"CHEVAL QUANCARD","reg":"Bordeaux"},{"code":"13702123","des":"1937","dom":"Les Vignerons de Tutiac","app":"Fronsac","coul":"Rouge","nf":137,"four":"LES VIGNERONS DE TUTIAC","reg":"Bordeaux"},{"code":"24600720","des":"Cuvée Marguerite Eiffel","dom":"Château Bel Air","app":"Graves de Vayres","coul":"Rouge","nf":246,"four":"LES CAPUCINS SAS EX MAD","reg":"Bordeaux"},{"code":"26600424","des":"Château La Croix Romane","dom":"","app":"Lalande de Pomerol","coul":"Rouge","nf":266,"four":"VIGNOBLES DUBARD","reg":"Bordeaux"},{"code":"13202822","des":"Château La Croix de Mission","dom":"","app":"Montagne Saint-Emilion","coul":"Rouge","nf":132,"four":"CHEVAL QUANCARD","reg":"Bordeaux"},{"code":"26600622","des":"Château Dubard Bel-Air","dom":"","app":"Puisseguin Saint-Emilion","coul":"Rouge","nf":266,"four":"VIGNOBLES DUBARD","reg":"Bordeaux"},{"code":"46000323","des":"Cheval Noir","dom":"","app":"Saint Emilion","coul":"Rouge","nf":460,"four":"MAHLER BESSE MAD","reg":"Bordeaux"},{"code":"67600222","des":"L'Eveil des Rêves","dom":"Château des Rêves","app":"Saint Emilion Grand Cru","coul":"Rouge","nf":676,"four":"CHATEAU DES REVES","reg":"Bordeaux"},{"code":"13200622","des":"Fortin Plaisance","dom":"Cheval Quancard","app":"Saint-Emilion","coul":"Rouge","nf":132,"four":"CHEVAL QUANCARD","reg":"Bordeaux"},{"code":"46000220","des":"Château La Couronne","dom":"","app":"Saint Emilion Grand Cru","coul":"Rouge","nf":460,"four":"MAHLER BESSE MAD","reg":"Bordeaux"},{"code":"19200417","des":"Clos des Menuts","dom":"","app":"Saint-Emilion Grand Cru","coul":"Rouge","nf":192,"four":"MAISON RIVIERE","reg":"Bordeaux"},{"code":"21000914","des":"Château Simard","dom":"","app":"Saint Emilion Grand Cru","coul":"Rouge","nf":210,"four":"MESTREZAT ACHAT","reg":"Bordeaux"},{"code":"67600122","des":"Château des Rêves","dom":"","app":"Saint Emilion Grand Cru","coul":"Rouge","nf":676,"four":"CHATEAU DES REVES","reg":"Bordeaux"},{"code":"24600423","des":"Chateau Lafont Menaut","dom":"","app":"Pessac Léognan","coul":"Blanc","nf":246,"four":"LES CAPUCINS SAS EX MAD","reg":"Bordeaux"},{"code":"24600123","des":"Château Carbonnieux","dom":"","app":"Pessac Léognan GCC","coul":"Blanc","nf":246,"four":"LES CAPUCINS SAS EX MAD","reg":"Bordeaux"},{"code":"10800319","des":"2nd vin Château de Chantegrive","dom":"Château la Rose-Nouet","app":"Graves","coul":"Rouge","nf":108,"four":"CHATEAU DE CHANTEGRIVE","reg":"Bordeaux"},{"code":"67700123","des":"Château Landiras","dom":"","app":"Graves","coul":"Rouge","nf":677,"four":"CHATEAU DE LANDIRAS","reg":"Bordeaux"},{"code":"10800120","des":"Château de Chantegrive","dom":"","app":"Graves","coul":"Rouge","nf":108,"four":"CHATEAU DE CHANTEGRIVE","reg":"Bordeaux"},{"code":"24600322","des":"Château Lafont Menaut","dom":"","app":"Pessac Léognan","coul":"Rouge","nf":246,"four":"LES CAPUCINS SAS EX MAD","reg":"Bordeaux"},{"code":"24601222","des":"2nd vin Château Brown","dom":"Pommeraie de Brown","app":"Pessac Léognan","coul":"Rouge","nf":246,"four":"LES CAPUCINS SAS EX MAD","reg":"Bordeaux"},{"code":"24600221","des":"Château Carbonnieux","dom":"","app":"Pessac Léognan GCC","coul":"Rouge","nf":246,"four":"LES CAPUCINS SAS EX MAD","reg":"Bordeaux"},{"code":"26800120DA","des":"2nd vin Château Sipian","dom":"Les Grands Cèdres","app":"Médoc","coul":"Rouge","nf":268,"four":"CHATEAU SIPIAN","reg":"Bordeaux"},{"code":"24600822","des":"Château La Douce","dom":"","app":"Médoc","coul":"Rouge","nf":246,"four":"LES CAPUCINS SAS EX MAD","reg":"Bordeaux"},{"code":"18500223","des":"2nd vin Château la Lagune","dom":"Moulin la Lagune","app":"Haut Médoc","coul":"Rouge","nf":185,"four":"CHATEAU LA LAGUNE","reg":"Bordeaux"},{"code":"13201319","des":"Château Haut Logat","dom":"","app":"Haut Médoc Cru Bourgeois","coul":"Rouge","nf":132,"four":"CHEVAL QUANCARD","reg":"Bordeaux"},{"code":"24601321","des":"Château Maucaillou","dom":"","app":"Moulis","coul":"Rouge","nf":246,"four":"LES CAPUCINS SAS EX MAD","reg":"Bordeaux"},{"code":"55000118","des":"Château Maucaillou","dom":"","app":"Moulis","coul":"Rouge","nf":550,"four":"JOSEPH PERRIER KRESSMANN","reg":"Bordeaux"},{"code":"46000120","des":"Château Picard","dom":"","app":"Saint Estèphe Cru Bourgeois","coul":"Rouge","nf":460,"four":"MAHLER BESSE MAD","reg":"Bordeaux"},{"code":"24601422","des":"Eclat de Tour de Pez","dom":"","app":"Saint Estèphe","coul":"Rouge","nf":246,"four":"LES CAPUCINS SAS EX MAD","reg":"Bordeaux"},{"code":"13201520","des":"Château Cossieu Coutelin","dom":"","app":"Saint-Estèphe","coul":"Rouge","nf":132,"four":"CHEVAL QUANCARD","reg":"Bordeaux"},{"code":"24601017","des":"Château La Bridane","dom":"","app":"Saint-Julien","coul":"Rouge","nf":246,"four":"LES CAPUCINS SAS EX MAD","reg":"Bordeaux"},{"code":"66000319","des":"2nd vin Château Talbot","dom":"Connétable de Talbot","app":"Saint Julien","coul":"Rouge","nf":660,"four":"MAISON BARRIERE","reg":"Bordeaux"},{"code":"61800224","des":"Petit Guiraud - 2nd vin du Château Guiraud","dom":"Château Guiraud","app":"Sauternes","coul":"Blanc","nf":618,"four":"TERRES DE NATURES","reg":"Bordeaux"},{"code":"61800116","des":"Château Guiraud","dom":"","app":"Sauternes 1er GCC","coul":"Blanc","nf":618,"four":"TERRES DE NATURES","reg":"Bordeaux"},{"code":"20700124","des":"Jean - Gamay Noir","dom":"Maison Jean Loron","app":"Vin de France","coul":"Rouge","nf":207,"four":"MAISON JEAN LORON","reg":"Beaujolais"},{"code":"64300325","des":"la Perle du Beaujolais","dom":"Domaine Chermette","app":"Beaujolais Villages","coul":"Blanc","nf":643,"four":"FAMILLE CHERMETTE","reg":"Beaujolais"},{"code":"64300124","des":"Les Griottes","dom":"Domaine Chermette","app":"Beaujolais Villages","coul":"Rouge","nf":643,"four":"FAMILLE CHERMETTE","reg":"Beaujolais"},{"code":"10903624","des":"Domaine de Font Curé","dom":"","app":"Brouilly","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Beaujolais"},{"code":"10906123","des":"Fernand Laroche","dom":"Maison Aujoux","app":"Brouilly","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Beaujolais"},{"code":"10906523","des":"Les Florales","dom":"Domiane Demiane","app":"Brouilly","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Beaujolais"},{"code":"10900223","des":"Cuvée Janine - Pisse Vieille","dom":"Maison Aujoux","app":"Brouilly","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Beaujolais"},{"code":"64300424","des":"Pierreux","dom":"Domaine Chermette","app":"Brouilly","coul":"Rouge","nf":643,"four":"FAMILLE CHERMETTE","reg":"Beaujolais"},{"code":"10905423","des":"Les Eaux Vives","dom":"Domaine de la Boisselière","app":"Chiroubles","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Beaujolais"},{"code":"21600123","des":"Gamay Noir","dom":"Domaine des Grands Fers","app":"Fleurie","coul":"Rouge","nf":216,"four":"DOMAINE DES GRANDS FERS","reg":"Beaujolais"},{"code":"21600223","des":"Gamay Originel","dom":"Domaine des Grands Fers","app":"Fleurie","coul":"Rouge","nf":216,"four":"DOMAINE DES GRANDS FERS","reg":"Beaujolais"},{"code":"64300524","des":"Poncié","dom":"Domaine Chermette","app":"Fleurie","coul":"Rouge","nf":643,"four":"FAMILLE CHERMETTE","reg":"Beaujolais"},{"code":"64300224","des":"Les Trois Roches","dom":"Domaine Chermette","app":"Moulin à vent","coul":"Rouge","nf":643,"four":"FAMILLE CHERMETTE","reg":"Beaujolais"},{"code":"15401323","des":"Château des Jacques","dom":"","app":"Moulin à Vent","coul":"Rouge","nf":154,"four":"MAISON LOUIS JADOT","reg":"Beaujolais"},{"code":"10902324","des":"Cadole du Chapitre","dom":"Domaine du Clos du Chapitre","app":"Saint Amour","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Beaujolais"},{"code":"55800422","des":"Château Fuissé","dom":"","app":"Julienas","coul":"Rouge","nf":558,"four":"CHATEAU FUISSE","reg":"Beaujolais"},{"code":"10900423","des":"Cuvée Mathilde","dom":"Maison Aujoux","app":"Morgon - Côte du Py","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Beaujolais"},{"code":"15401623","des":"Château des Jacques","dom":"","app":"Morgon","coul":"Rouge","nf":154,"four":"MAISON LOUIS JADOT","reg":"Beaujolais"},{"code":"14801623","des":"La Côte du Py","dom":"Domaine Marcel Joubert","app":"Morgon - Côte du Py","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Beaujolais"},{"code":"14805123","des":"La Côte du Py - MAGNUM","dom":"Domaine Marcel Joubert","app":"Morgon - Côte du Py","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Beaujolais"},{"code":"10904225","des":"Aligoté - Derrièrre la Fontaine","dom":"Maison Aujoux","app":"Bourgogne Aligoté","coul":"Blanc","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Bourgogne"},{"code":"12100623","des":"Aligoté","dom":"Domaine Maldant Pauvelot","app":"Bourgogne","coul":"Blanc","nf":121,"four":"GRANDS VINS DU VIEUX MONDE - DOMAINE MALDANT","reg":"Bourgogne"},{"code":"35800323","des":"Bourgogne Chardonnay","dom":"Brocard","app":"Bourgogne","coul":"Blanc","nf":358,"four":"JM BROCARD","reg":"Bourgogne"},{"code":"10901123","des":"Art Minéral","dom":"Maison Aujoux","app":"Bourgogne Chardonnay","coul":"Blanc","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Bourgogne"},{"code":"28500125","des":"Frissons","dom":"Domaine Gautheron","app":"Bourgogne Chardonnay","coul":"Blanc","nf":285,"four":"DOMAINE GAUTHERON","reg":"Bourgogne"},{"code":"60502223","des":"Bourgogne Chardonnay","dom":"Domaine Maldant Pauvelot","app":"Bourgogne","coul":"Blanc","nf":605,"four":"GDD2 - LES GOUTTES DE DIEU - LA CAVE","reg":"Bourgogne"},{"code":"10900723","des":"Cuvée Juliette","dom":"Belena","app":"Côteaux Bourguignons","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Bourgogne"},{"code":"25000124","des":"Bourgogne Gamay","dom":"Louis Latour","app":"Bourgogne Gamay","coul":"Rouge","nf":250,"four":"LOUIS LATOUR","reg":"Bourgogne"},{"code":"35800422","des":"Bourgogne Pinot Noir","dom":"Brocard","app":"Bourgogne","coul":"Rouge","nf":358,"four":"JM BROCARD","reg":"Bourgogne"},{"code":"10901524","des":"La Croix d'en Haut - Pinot Noir","dom":"Belena","app":"Bourgogne Pinot Noir","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Bourgogne"},{"code":"31903324","des":"Pinot Noir Cuvée du Chapitre","dom":"Jaffelin","app":"Bourgogne","coul":"Rouge","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Bourgogne"},{"code":"27202122","des":"Bourgogne Pinot Noir - Couchois","dom":"Domaine Kundrat et Fils","app":"Bourgogne","coul":"Rouge","nf":272,"four":"KUNDRAT & FILS","reg":"Bourgogne"},{"code":"12102324","des":"Bourgogne Pinot Noir","dom":"Domaine Maldant Pauvelot","app":"Bourgogne","coul":"Rouge","nf":121,"four":"GRANDS VINS DU VIEUX MONDE - DOMAINE MALDANT","reg":"Bourgogne"},{"code":"15402123","des":"Couvent des Jacobins","dom":"Louis Jadot","app":"Bourgogne","coul":"Rouge","nf":154,"four":"MAISON LOUIS JADOT","reg":"Bourgogne"},{"code":"61100123","des":"Simonnet Febvre","dom":"","app":"Bourgogne Chitry","coul":"Blanc","nf":611,"four":"SIMONNET FEBVRE","reg":"Bourgogne"},{"code":"35800125","des":"Maison Brocard","dom":"","app":"Petit Chablis","coul":"Blanc","nf":358,"four":"JM BROCARD","reg":"Bourgogne"},{"code":"35800224","des":"Maison Brocard","dom":"","app":"Chablis","coul":"Blanc","nf":358,"four":"JM BROCARD","reg":"Bourgogne"},{"code":"11300124","des":"Domaine Gautheron","dom":"","app":"Chablis","coul":"Blanc","nf":113,"four":"DOMAINE GAUTHERON","reg":"Bourgogne"},{"code":"27202325","des":"Domaine Séguinot Bordet","dom":"","app":"Chablis","coul":"Blanc","nf":272,"four":"KUNDRAT & FILS","reg":"Bourgogne"},{"code":"35800622","des":"La Boissonneuse (cartons de 7 bouteilles)","dom":"Domaine Julien Brocard","app":"Chablis","coul":"Blanc","nf":358,"four":"JM BROCARD","reg":"Bourgogne"},{"code":"11300324","des":"1er Cru Vaucoupin","dom":"Domaine Gautheron","app":"Chablis 1er Cru","coul":"Blanc","nf":113,"four":"DOMAINE GAUTHERON","reg":"Bourgogne"},{"code":"35800722","des":"1er Cru Les Vaudevey (cartons de 7 bouteilles)","dom":"Domaine Julien Brocard","app":"Chablis 1er Cru","coul":"Blanc","nf":358,"four":"JM BROCARD","reg":"Bourgogne"},{"code":"61100323","des":"Simonnet Febvre","dom":"","app":"Bourgogne Epineuil","coul":"Rouge","nf":611,"four":"SIMONNET FEBVRE","reg":"Bourgogne"},{"code":"61100222","des":"Simonnet Febvre","dom":"","app":"Bourgogne Irancy","coul":"Rouge","nf":611,"four":"SIMONNET FEBVRE","reg":"Bourgogne"},{"code":"10907025","des":"Les Racines de la grand-mère","dom":"Maison Aujoux","app":"Viré Clessé","coul":"Blanc","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Bourgogne"},{"code":"20700822","des":"Les Enracinés","dom":"Maison Jean Loron","app":"Mâcon-Chardonnay","coul":"Blanc","nf":207,"four":"MAISON JEAN LORON","reg":"Bourgogne"},{"code":"65000924","des":"Seguin Manuel","dom":"","app":"Mâcon-Villages","coul":"Blanc","nf":650,"four":"SEGUIN MANUEL","reg":"Bourgogne"},{"code":"55800323","des":"Château Fuissé","dom":"","app":"Mâcon-Fuissé","coul":"Blanc","nf":558,"four":"CHATEAU FUISSE","reg":"Bourgogne"},{"code":"10906623","des":"Champ de Long","dom":"Maison Aujoux","app":"Viré Clessé","coul":"Blanc","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Bourgogne"},{"code":"10900823","des":"Cadole du Chapitre-  Vieilles Vignes - Les Bruyères","dom":"Maison Aujoux","app":"Viré Clessé","coul":"Blanc","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Bourgogne"},{"code":"65001024","des":"Seguin Manuel","dom":"","app":"Viré Clessé","coul":"Blanc","nf":650,"four":"SEGUIN MANUEL","reg":"Bourgogne"},{"code":"54300124","des":"Domaine P.Charmond","dom":"","app":"Saint Véran","coul":"Blanc","nf":543,"four":"SOCIETE DES VINS DE PIZAY","reg":"Bourgogne"},{"code":"10902618","des":"Les Pièces d'Or","dom":"Maison Aujoux","app":"Pouilly Fuissé","coul":"Blanc","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Bourgogne"},{"code":"25001922","des":"En Paradis","dom":"Domaine Louis Latour","app":"Pouilly Vinzelles","coul":"Blanc","nf":250,"four":"LOUIS LATOUR","reg":"Bourgogne"},{"code":"55800123","des":"Tête de Cuvée","dom":"Château Fuissé","app":"Pouilly Fuissé","coul":"Blanc","nf":558,"four":"CHATEAU FUISSE","reg":"Bourgogne"},{"code":"55800223","des":"Le Clos","dom":"Château Fuissé","app":"Pouilly Fuissé 1er Cru","coul":"Blanc","nf":558,"four":"CHATEAU FUISSE","reg":"Bourgogne"},{"code":"20700421","des":"Les Terres Rouges (AAE)","dom":"Maison Jean Loron","app":"Mâcon","coul":"Rouge","nf":207,"four":"MAISON JEAN LORON","reg":"Bourgogne"},{"code":"35901023","des":"Les Cent Pièces","dom":"Domaine Faiveley","app":"Montagny","coul":"Blanc","nf":359,"four":"DOMAINE FAIVELEY","reg":"Bourgogne"},{"code":"65000724","des":"1er Cru les Vignes du Soleil","dom":"Seguin Manuel","app":"Montagny 1er Cru","coul":"Blanc","nf":650,"four":"SEGUIN MANUEL","reg":"Bourgogne"},{"code":"35902923","des":"Le Vallon Blanc","dom":"Domaine Faiveley","app":"Mercurey","coul":"Blanc","nf":359,"four":"DOMAINE FAIVELEY","reg":"Bourgogne"},{"code":"10001118","des":"Vieilles Vignes","dom":"Domaine Louis Max","app":"Mercurey","coul":"Blanc","nf":100,"four":"LOUIS MAX","reg":"Bourgogne"},{"code":"65000823","des":"Les Cailloux","dom":"Seguin Manuel","app":"Rully","coul":"Blanc","nf":650,"four":"SEGUIN MANUEL","reg":"Bourgogne"},{"code":"31903122","des":"Château de Rully","dom":"","app":"Rully","coul":"Blanc","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Bourgogne"},{"code":"35901923","des":"Les Villeranges","dom":"Domaine Faiveley","app":"Rully","coul":"Blanc","nf":359,"four":"DOMAINE FAIVELEY","reg":"Bourgogne"},{"code":"27202024","des":"Domaine Masse","dom":"","app":"Givry","coul":"Rouge","nf":272,"four":"KUNDRAT & FILS","reg":"Bourgogne"},{"code":"35901523","des":"Champ Lalot","dom":"Domaine Faiveley","app":"Givry","coul":"Rouge","nf":359,"four":"DOMAINE FAIVELEY","reg":"Bourgogne"},{"code":"65000322","des":"Vieilles Vignes","dom":"Seguin Manuel","app":"Mercurey","coul":"Rouge","nf":650,"four":"SEGUIN MANUEL","reg":"Bourgogne"},{"code":"27206123","des":"Bois Cassien","dom":"Domaine Chanzy","app":"Mercurey","coul":"Rouge","nf":272,"four":"KUNDRAT & FILS","reg":"Bourgogne"},{"code":"35900524","des":"La Framboisière - Monopole","dom":"Domaine Faiveley","app":"Mercurey","coul":"Rouge","nf":359,"four":"DOMAINE FAIVELEY","reg":"Bourgogne"},{"code":"27600223","des":"Château de Marsannay","dom":"","app":"Marsannay","coul":"Blanc","nf":276,"four":"DOMAINE DU CHATEAU DE MARSANNAY","reg":"Bourgogne"},{"code":"10903723","des":"Les Roncières","dom":"Maison Aujoux","app":"Hautes Côtes de Nuits","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Bourgogne"},{"code":"27600322","des":"Château de Marsannay","dom":"","app":"Marsannay","coul":"Rouge","nf":276,"four":"DOMAINE DU CHATEAU DE MARSANNAY","reg":"Bourgogne"},{"code":"68800211","des":"Domaine Ambroise","dom":"","app":"Nuits Saint Georges","coul":"Rouge","nf":688,"four":"MAISON AMBROISE","reg":"Bourgogne"},{"code":"15200123","des":"La Charmotte","dom":"Domaine V&V Godier","app":"Nuits Saint Georges","coul":"Rouge","nf":152,"four":"V & V GODIER","reg":"Bourgogne"},{"code":"15200222","des":"Domaine V&V Godier","dom":"","app":"Chambolle-Musigny","coul":"Rouge","nf":152,"four":"V & V GODIER","reg":"Bourgogne"},{"code":"35902722","des":"Vieilles Vignes","dom":"Domaine Faiveley","app":"Gevrey-Chambertin","coul":"Rouge","nf":359,"four":"DOMAINE FAIVELEY","reg":"Bourgogne"},{"code":"27600422","des":"1er Cru Bel Air","dom":"Château de Marsannay","app":"Gevrey-Chambertin 1er Cru","coul":"Rouge","nf":276,"four":"DOMAINE DU CHATEAU DE MARSANNAY","reg":"Bourgogne"},{"code":"12100224","des":"Domaine Maldant","dom":"","app":"Chorey Les Beaune","coul":"Blanc","nf":121,"four":"GRANDS VINS DU VIEUX MONDE - DOMAINE MALDANT","reg":"Bourgogne"},{"code":"65000624","des":"Siserpe","dom":"Domaine Seguin Manuel","app":"Beaune","coul":"Blanc","nf":650,"four":"SEGUIN MANUEL","reg":"Bourgogne"},{"code":"65001124","des":"1er Cru Clos des Mouches","dom":"Domaine Seguin Manuel","app":"Beaune 1er Cru","coul":"Blanc","nf":650,"four":"SEGUIN MANUEL","reg":"Bourgogne"},{"code":"35900823","des":"Les Marnes Blanches","dom":"Domaine Faiveley","app":"Ladoix","coul":"Blanc","nf":359,"four":"DOMAINE FAIVELEY","reg":"Bourgogne"},{"code":"68800116","des":"1er Cru les Gréchons","dom":"Domaine Ambroise","app":"Ladoix 1er Cru","coul":"Blanc","nf":688,"four":"MAISON AMBROISE","reg":"Bourgogne"},{"code":"65000522","des":"Vieilles Vignes","dom":"Seguin Manuel","app":"Santenay","coul":"Blanc","nf":650,"four":"SEGUIN MANUEL","reg":"Bourgogne"},{"code":"25001723","des":"1er Cru en Caradeux","dom":"Domaine Louis Latour","app":"Pernand-Vergelesses 1er Cru","coul":"Blanc","nf":250,"four":"LOUIS LATOUR","reg":"Bourgogne"},{"code":"24400822","des":"Meursault du Château","dom":"Château de Meursault","app":"Meursault","coul":"Blanc","nf":244,"four":"DOMAINE DU CHATEAU DE MEURSAULT","reg":"Bourgogne"},{"code":"25001324","des":"Domaine Louis Latour","dom":"Domaine Louis Latour","app":"Meursault","coul":"Blanc","nf":250,"four":"LOUIS LATOUR","reg":"Bourgogne"},{"code":"41200323","des":"Clos de Mazeray - Monopole","dom":"Domaine Jacques Prieur","app":"Meursault","coul":"Blanc","nf":412,"four":"DOMAINE JACQUES PRIEUR","reg":"Bourgogne"},{"code":"27200723","des":"1er Cru Les Champgains","dom":"Domaine Guy Amiot","app":"Chassagne Montrachet 1er Cru","coul":"Blanc","nf":272,"four":"KUNDRAT & FILS","reg":"Bourgogne"},{"code":"35903023","des":"Grand Cru","dom":"Domaine Faiveley","app":"Corton Charlemagne Grand Cru","coul":"Blanc","nf":359,"four":"DOMAINE FAIVELEY","reg":"Bourgogne"},{"code":"10903822","des":"Le Renard de la Combe","dom":"Belena","app":"Hautes Côtes de Beaune","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Bourgogne"},{"code":"27600123","des":"Bourgogne du Château","dom":"Château de Meursault","app":"Bourgogne","coul":"Rouge","nf":276,"four":"DOMAINE DU CHATEAU DE MARSANNAY","reg":"Bourgogne"},{"code":"12100124","des":"Domaine Maldant","dom":"","app":"Chorey Les Beaune","coul":"Rouge","nf":121,"four":"GRANDS VINS DU VIEUX MONDE - DOMAINE MALDANT","reg":"Bourgogne"},{"code":"12100524","des":"Domaine Maldant","dom":"","app":"Savigny lès Beaune","coul":"Rouge","nf":121,"four":"GRANDS VINS DU VIEUX MONDE - DOMAINE MALDANT","reg":"Bourgogne"},{"code":"25000918","des":"Louis Latour","dom":"","app":"Savigny lès Beaune","coul":"Rouge","nf":250,"four":"LOUIS LATOUR","reg":"Bourgogne"},{"code":"65000122","des":"Godeaux","dom":"Seguin Manuel","app":"Savigny lès Beaune","coul":"Rouge","nf":650,"four":"SEGUIN MANUEL","reg":"Bourgogne"},{"code":"65000222","des":"Aux Communes","dom":"Domaine Seguin Manuel","app":"Vosne Romanée","coul":"Rouge","nf":650,"four":"SEGUIN MANUEL","reg":"Bourgogne"},{"code":"31903222","des":"Antonin Rodet","dom":"","app":"Santenay","coul":"Rouge","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Bourgogne"},{"code":"31903422","des":"1er Cru Les Clos Roussots","dom":"Antonin Rodet","app":"Maranges 1er Cru","coul":"Rouge","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Bourgogne"},{"code":"12102623","des":"Domaine Maldant","dom":"","app":"Aloxe Corton","coul":"Rouge","nf":121,"four":"GRANDS VINS DU VIEUX MONDE - DOMAINE MALDANT","reg":"Bourgogne"},{"code":"24400622","des":"1er Cru Les Cent-Vignes","dom":"Château de Meursault","app":"Beaune 1er Cru","coul":"Rouge","nf":244,"four":"DOMAINE DU CHATEAU DE MEURSAULT","reg":"Bourgogne"},{"code":"25002613","des":"1er Cru Vignes Franches","dom":"Domaine Louis Latour","app":"Beaune 1er Cru","coul":"Rouge","nf":250,"four":"LOUIS LATOUR","reg":"Bourgogne"},{"code":"35902822","des":"1er Cru Clos de l'Ecu - Monopole","dom":"Domaine Faiveley","app":"Beaune 1er Cru","coul":"Rouge","nf":359,"four":"DOMAINE FAIVELEY","reg":"Bourgogne"},{"code":"41200723","des":"Clos de Mazeray - Monopole","dom":"Domaine Jacques Prieur","app":"Meursault","coul":"Rouge","nf":412,"four":"DOMAINE JACQUES PRIEUR","reg":"Bourgogne"},{"code":"59500122","des":"Clos Marey-Monge - Cuvée Emilie","dom":"Château de Pommard","app":"Pommard","coul":"Rouge","nf":595,"four":"CHATEAU DE POMMARD","reg":"Bourgogne"},{"code":"65000423","des":"Petits Epenots","dom":"Domaine Seguin Manuel","app":"Pommard","coul":"Rouge","nf":650,"four":"SEGUIN MANUEL","reg":"Bourgogne"},{"code":"24400922","des":"Clos de la Platière","dom":"Château de Meursault","app":"Pommard","coul":"Rouge","nf":244,"four":"DOMAINE DU CHATEAU DE MEURSAULT","reg":"Bourgogne"},{"code":"25002122","des":"Domaine Louis Latour","dom":"","app":"Corton Grand Cru","coul":"Rouge","nf":250,"four":"LOUIS LATOUR","reg":"Bourgogne"},{"code":"25000723","des":"Ardèche Chardonnay","dom":"Louis Latour","app":"Ardèche IGP","coul":"Blanc","nf":250,"four":"LOUIS LATOUR","reg":"Rhône"},{"code":"25000823","des":"Grand Ardèche Chardonnay","dom":"Louis Latour","app":"Ardèche IGP","coul":"Blanc","nf":250,"four":"LOUIS LATOUR","reg":"Rhône"},{"code":"15000424","des":"Secret de Famille - Viognier","dom":"Paul Jaboulet Aine","app":"Vin de France","coul":"Blanc","nf":150,"four":"DOMAINES PAUL JABOULET AINE","reg":"Rhône"},{"code":"12301024","des":"Les Grains - Viognier","dom":"Marrenon","app":"Méditerranée IGP","coul":"Blanc","nf":123,"four":"MARRENON","reg":"Rhône"},{"code":"28700625","des":"Roussanne - les Vignes d'à Côté","dom":"Yves Cuilleron","app":"IGP Collines Rhodaniennes","coul":"Blanc","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"28700924","des":"Gamay - les Vignes d'à Côté","dom":"Yves Cuilleron","app":"IGP Collines Rhodaniennes","coul":"Rouge","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"463006NM","des":"Plan Pegau","dom":"Domaine de Pegau","app":"Vin de France","coul":"Rouge","nf":463,"four":"DOMAINE DE PEGAU","reg":"Rhône"},{"code":"28701025","des":"Syrah - les Vignes d'à Côté","dom":"Yves Cuilleron","app":"IGP Collines Rhodaniennes","coul":"Rouge","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"28700824","des":"Syrah Signé","dom":"Yves Cuilleron","app":"IGP Collines Rhodaniennes","coul":"Rouge","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"31900823","des":"Safranée","dom":"Château Grand Escalion","app":"Costières de Nîmes","coul":"Rouge","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Rhône"},{"code":"10902823","des":"Les Pierres Blanches","dom":"Maison Aujoux","app":"Côtes du Rhône","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Rhône"},{"code":"61700124","des":"Domaine de la Guintrandy","dom":"","app":"Côtes du Rhône","coul":"Rouge","nf":617,"four":"DOMAINE LA GUINTRANDY","reg":"Rhône"},{"code":"10902024","des":"Domaine des Violettes","dom":"","app":"Côtes du Rhône","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Rhône"},{"code":"10905824","des":"Les Galets de La Lyre","dom":"Maison Aujoux","app":"Côtes du Rhône","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Rhône"},{"code":"31900624","des":"Saint Vincent","dom":"G.Meffre","app":"Côtes du Rhône","coul":"Rouge","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Rhône"},{"code":"15001524","des":"Parallèle 45","dom":"Paul Jaboulet Ainé","app":"Côtes du Rhône","coul":"Rouge","nf":150,"four":"DOMAINES PAUL JABOULET AINE","reg":"Rhône"},{"code":"13801523","des":"Mademoiselle du Mont","dom":"La Ferme du Mont","app":"Côtes du Rhône","coul":"Rouge","nf":138,"four":"LES DOMAINES DU MONT","reg":"Rhône"},{"code":"11002324","des":"Saint Esprit","dom":"Maison Delas","app":"Côtes du Rhône","coul":"Rouge","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Rhône"},{"code":"43902124","des":"Belleruche","dom":"M. Chapoutier","app":"Côtes du Rhône","coul":"Rouge","nf":439,"four":"M. CHAPOUTIER","reg":"Rhône"},{"code":"46300422","des":"Cuvée Maclura","dom":"Domaine de Pegau","app":"Côtes du Rhône","coul":"Rouge","nf":463,"four":"DOMAINE DE PEGAU","reg":"Rhône"},{"code":"28400523","des":"La Petite Bellane","dom":"Clos Bellane","app":"Côtes du Rhône Villages","coul":"Rouge","nf":284,"four":"CLOS BELLANE","reg":"Rhône"},{"code":"46300522","des":"Cuvée Setier","dom":"Domaine de Pegau","app":"Côtes du Rhône Villages","coul":"Rouge","nf":463,"four":"DOMAINE DE PEGAU","reg":"Rhône"},{"code":"28400223","des":"Clos Bellane","dom":"","app":"Côtes du Rhône Valreas","coul":"Rouge","nf":284,"four":"CLOS BELLANE","reg":"Rhône"},{"code":"28400322","des":"Les Echalas","dom":"Clos Bellane","app":"Côtes du Rhône Valreas","coul":"Rouge","nf":284,"four":"CLOS BELLANE","reg":"Rhône"},{"code":"31902023","des":"Saint Vincent","dom":"G.Meffre","app":"Côtes du Rhône","coul":"Blanc","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Rhône"},{"code":"15001824","des":"Parallèle 45","dom":"Dne.Paul Jaboulet Aîné","app":"Côtes du Rhône","coul":"Blanc","nf":150,"four":"DOMAINES PAUL JABOULET AINE","reg":"Rhône"},{"code":"46300324","des":"Cuvée Lône","dom":"Domaine de Pegau","app":"Côtes du Rhône","coul":"Blanc","nf":463,"four":"DOMAINE DE PEGAU","reg":"Rhône"},{"code":"13800123","des":"La Truffière","dom":"La Ferme du Mont","app":"Côtes du Rhône","coul":"Blanc","nf":138,"four":"LES DOMAINES DU MONT","reg":"Rhône"},{"code":"28400123","des":"Clos Bellane","dom":"","app":"Côtes du Rhône Valreas","coul":"Blanc","nf":284,"four":"CLOS BELLANE","reg":"Rhône"},{"code":"28400423","des":"Les Echalas","dom":"Clos Bellane","app":"Côtes du Rhône Valreas","coul":"Blanc","nf":284,"four":"CLOS BELLANE","reg":"Rhône"},{"code":"31901624","des":"Saint Pétrarque","dom":"Gabriel Meffre","app":"Ventoux","coul":"Rouge","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Rhône"},{"code":"50000120","des":"Vox","dom":"Via Caritatis","app":"Ventoux","coul":"Rouge","nf":500,"four":"VIA CARITATIS","reg":"Rhône"},{"code":"12300123","des":"Orca","dom":"Marrenon","app":"Ventoux","coul":"Rouge","nf":123,"four":"MARRENON","reg":"Rhône"},{"code":"31900521","des":"Saint Jean","dom":"Gabriel Meffre","app":"Cairanne","coul":"Rouge","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Rhône"},{"code":"13801822","des":"Lucantis","dom":"La Ferme du Mont","app":"Rasteau","coul":"Rouge","nf":138,"four":"LES DOMAINES DU MONT","reg":"Rhône"},{"code":"13801423","des":"Jugunda","dom":"La Ferme du Mont","app":"Gigondas","coul":"Rouge","nf":138,"four":"LES DOMAINES DU MONT","reg":"Rhône"},{"code":"50000224","des":"Vox","dom":"Via Caritatis","app":"Ventoux","coul":"Blanc","nf":500,"four":"VIA CARITATIS","reg":"Rhône"},{"code":"26200124","des":"Le Jas des Papes","dom":"","app":"Châteauneuf-du-Pape","coul":"Blanc","nf":262,"four":"LE JAS DES PAPES","reg":"Rhône"},{"code":"28200524","des":"Clos de l'Oratoire des Papes","dom":"Maison Ogier","app":"Châteauneuf-du-Pape","coul":"Blanc","nf":282,"four":"AD VINI","reg":"Rhône"},{"code":"26200222","des":"Le Jas des Papes","dom":"","app":"Châteauneuf-du-Pape","coul":"Rouge","nf":262,"four":"LE JAS DES PAPES","reg":"Rhône"},{"code":"28200422","des":"Clos de l'Oratoire des Papes","dom":"Maison Ogier","app":"Châteauneuf-du-Pape","coul":"Rouge","nf":282,"four":"AD VINI","reg":"Rhône"},{"code":"46300120","des":"Cuvée Réservée","dom":"Domaine de Pegau","app":"Châteauneuf-du-Pape","coul":"Rouge","nf":463,"four":"DOMAINE DE PEGAU","reg":"Rhône"},{"code":"15001922","des":"Les Cassines","dom":"Paul Jaboulet Aine","app":"Condrieu","coul":"Blanc","nf":150,"four":"DOMAINES PAUL JABOULET AINE","reg":"Rhône"},{"code":"28700424","des":"La Petite Côte","dom":"Yves Cuilleron","app":"Condrieu","coul":"Blanc","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"28711323","des":"Lieu-dit \"Verlieu\"","dom":"Yves Cuilleron","app":"Condrieu","coul":"Blanc","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"11002922","des":"Clos Boucher","dom":"Domaine Delas","app":"Condrieu","coul":"Blanc","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Rhône"},{"code":"31901219","des":"Laurus","dom":"Gabriel Meffre","app":"Condrieu","coul":"Blanc","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Rhône"},{"code":"15002024","des":"Le Grand Pompée","dom":"Paul Jaboulet Aine","app":"Saint-Joseph","coul":"Blanc","nf":150,"four":"DOMAINES PAUL JABOULET AINE","reg":"Rhône"},{"code":"31901923","des":"Saint Etienne","dom":"Gabriel Meffre","app":"Saint-Joseph","coul":"Blanc","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Rhône"},{"code":"28700224","des":"Lyseras (Marsanne - Roussane)","dom":"Yves Cuilleron","app":"Saint-Joseph","coul":"Blanc","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"28700324","des":"Les Potiers (Marsanne - Roussane)","dom":"Yves Cuilleron","app":"Saint-Péray","coul":"Blanc","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"15000623","des":"Les Jalets","dom":"Paul Jaboulet Ainé","app":"Crozes-Hermitage","coul":"Blanc","nf":150,"four":"DOMAINES PAUL JABOULET AINE","reg":"Rhône"},{"code":"11003022","des":"Les Launes","dom":"Maison Delas","app":"Crozes-Hermitage","coul":"Blanc","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Rhône"},{"code":"13800223","des":"Nos Granites Ciselés","dom":"Jeannine Boutin","app":"Crozes-Hermitage","coul":"Blanc","nf":138,"four":"LES DOMAINES DU MONT","reg":"Rhône"},{"code":"28701123","des":"Madinière","dom":"Domaine Yves Cuilleron","app":"Côte Rôtie","coul":"Rouge","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"28700124","des":"Bassenon","dom":"Domaine Yves Cuilleron","app":"Côte Rôtie","coul":"Rouge","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"38501123","des":"Côteaux de Bassenon","dom":"Domaine Martin Clerc","app":"Côte Rôtie","coul":"Rouge","nf":385,"four":"LES JULES","reg":"Rhône"},{"code":"13800423","des":"Bonnevaux","dom":"Jeannine Boutin","app":"Côte Rôtie","coul":"Rouge","nf":138,"four":"LES DOMAINES DU MONT","reg":"Rhône"},{"code":"28711223","des":"Lieu-Dit \"Les Côtes\"","dom":"Domaine Yves Cuilleron","app":"Cornas","coul":"Rouge","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"10903024","des":"Les Pierres Blanches","dom":"Maison Aujoux","app":"Crozes-Hermitage","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Rhône"},{"code":"15000523","des":"Les Jalets","dom":"Paul Jaboulet Ainé","app":"Crozes-Hermitage","coul":"Rouge","nf":150,"four":"DOMAINES PAUL JABOULET AINE","reg":"Rhône"},{"code":"11003123","des":"Les Launes","dom":"Maison Delas","app":"Crozes-Hermitage","coul":"Rouge","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Rhône"},{"code":"26200324","des":"Le Pavillon","dom":"Domaine du Pavillon","app":"Crozes-Hermitage","coul":"Rouge","nf":262,"four":"LE JAS DES PAPES","reg":"Rhône"},{"code":"31901724","des":"Saint Pierre","dom":"Gabriel Meffre","app":"Crozes-Hermitage","coul":"Rouge","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Rhône"},{"code":"28700723","des":"Labaya","dom":"Domaine Yves Cuilleron","app":"Crozes-Hermitage","coul":"Rouge","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"13800623","des":"Les Hauts Granites","dom":"Jeannine Boutin","app":"Crozes-Hermitage","coul":"Rouge","nf":138,"four":"LES DOMAINES DU MONT","reg":"Rhône"},{"code":"15000818","des":"Domaine de Thalabert","dom":"","app":"Crozes-Hermitage","coul":"Rouge","nf":150,"four":"DOMAINES PAUL JABOULET AINE","reg":"Rhône"},{"code":"28701424","des":"Lieu-Dit \"Les Châssis\"","dom":"Domaine Yves Cuilleron","app":"Crozes-Hermitage","coul":"Rouge","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"11002823","des":"Les Challeys","dom":"Maison Delas","app":"Saint-Joseph","coul":"Rouge","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Rhône"},{"code":"15001624","des":"Le Grand Pompée","dom":"Paul Jaboulet Ainé","app":"Saint-Joseph","coul":"Rouge","nf":150,"four":"DOMAINES PAUL JABOULET AINE","reg":"Rhône"},{"code":"13800524","des":"Hommage à Jean","dom":"Jeannine Boutin","app":"Saint-Joseph","coul":"Rouge","nf":138,"four":"LES DOMAINES DU MONT","reg":"Rhône"},{"code":"28700523","des":"Cavanos","dom":"Domaine Yves Cuilleron","app":"Saint-Joseph","coul":"Rouge","nf":287,"four":"CAVE YVES CUILLERON","reg":"Rhône"},{"code":"11004023","des":"François de Tournon","dom":"Maison Delas","app":"Saint-Joseph","coul":"Rouge","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Rhône"},{"code":"31901523","des":"Laurus","dom":"Gabriel Meffre","app":"Saint-Joseph","coul":"Rouge","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Rhône"},{"code":"14804223CRD","des":"Chardonnay (AAE)","dom":"Les Athlètes du Vin","app":"Vin de France","coul":"Blanc","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14802225","des":"Chenin Blanc","dom":"Les Athlètes du Vin","app":"Vin de France","coul":"Blanc","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"10700325","des":"Le Petit Connétable - Sauvignon Blanc","dom":"Château de Sancerre","app":"IGP Val de Loire","coul":"Blanc","nf":107,"four":"ORCHIDEES MAISONS DE VIN","reg":"Loire"},{"code":"16600624","des":"La Perdrix de l'Année","dom":"Wine Trackers","app":"Muscadet Sèvre et Maine","coul":"Blanc","nf":166,"four":"WINE TRACKERS","reg":"Loire"},{"code":"12700524","des":"Moulin Blanc - Blanc de Noirs","dom":"Domaine Mourat","app":"Vin de France","coul":"Blanc","nf":127,"four":"VIGNOBLES MOURAT SAS","reg":"Loire"},{"code":"12702123","des":"Clos Saint André","dom":"Domaine Mourat","app":"Mareuil Fiefs Vendéens","coul":"Blanc","nf":127,"four":"VIGNOBLES MOURAT SAS","reg":"Loire"},{"code":"10702823","des":"Les Petits Gars","dom":"Domaine des Hardières","app":"Anjou AOC","coul":"Blanc","nf":107,"four":"ORCHIDEES MAISONS DE VIN","reg":"Loire"},{"code":"14801923","des":"Vouvray Sec","dom":"Domaine Vincent Carême","app":"Vouvray","coul":"Blanc","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14804723","des":"Les Terres Turones","dom":"D. et P.Ivancic","app":"Montlouis sur Loire","coul":"Blanc","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"66700523","des":"Clos des Brancs - Chenin","dom":"Domaine des Hauts Baigneux","app":"Touraine - Azay le Rideau","coul":"Blanc","nf":667,"four":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","reg":"Loire"},{"code":"14805022","des":"La Jalousie","dom":"Domaine du Closel","app":"Savennières","coul":"Blanc","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"11700523","des":"Chardonnay","dom":"Domaine Serge Laloue","app":"Côtes de la Charité IGP","coul":"Blanc","nf":117,"four":"DOMAINE SERGE LALOUE","reg":"Loire"},{"code":"14800723","des":"Ligère","dom":"Domaine de Montcy","app":"Cheverny","coul":"Blanc","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14804919","des":"Licorne","dom":"Domaine de Montcy","app":"Cour-Cheverny","coul":"Blanc","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"10500224","des":"Vent du Nord","dom":"Domaine des Guyons","app":"Saumur","coul":"Blanc","nf":105,"four":"BIMONT-DOMAINE DES GUYONS","reg":"Loire"},{"code":"14700625","des":"Château Fouquet","dom":"","app":"Saumur","coul":"Blanc","nf":147,"four":"DOMAINE FILLIATREAU","reg":"Loire"},{"code":"14700423","des":"l'Imago","dom":"Château Fouquet","app":"Saumur","coul":"Blanc","nf":147,"four":"DOMAINE FILLIATREAU","reg":"Loire"},{"code":"14802623","des":"Château Yvonne","dom":"","app":"Saumur","coul":"Blanc","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14803618","des":"Clos de l'Echelier","dom":"Domaine des Roches Neuves","app":"Saumur","coul":"Blanc","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"43800224","des":"Domaine Jean Michel Sorbe","dom":"","app":"Quincy","coul":"Blanc","nf":438,"four":"JOSEPH MELLOT","reg":"Loire"},{"code":"69100124","des":"1ère Confidence","dom":"Doamine Gaël Felix","app":"Quincy","coul":"Blanc","nf":691,"four":"VINI BE GOOD - VIA BUVONS","reg":"Loire"},{"code":"43800825","des":"Les Brémailles","dom":"Domaine Joseph Mellot","app":"Pouilly sur Loire","coul":"Blanc","nf":438,"four":"JOSEPH MELLOT","reg":"Loire"},{"code":"43800624","des":"Les Thureaux","dom":"Domaine Joseph Mellot","app":"Menetou Salon","coul":"Blanc","nf":438,"four":"JOSEPH MELLOT","reg":"Loire"},{"code":"30700125","des":"Domaine du Loriot","dom":"","app":"Menetou Salon","coul":"Blanc","nf":307,"four":"CHERRIER FRERES","reg":"Loire"},{"code":"69100424","des":"Domaine Van Remoortere","dom":"","app":"Menetou Salon","coul":"Blanc","nf":691,"four":"VINI BE GOOD - VIA BUVONS","reg":"Loire"},{"code":"43800925","des":"Le Chant des Vignes","dom":"Domaine Joseph Mellot","app":"Pouilly Fumé","coul":"Blanc","nf":438,"four":"JOSEPH MELLOT","reg":"Loire"},{"code":"14804822","des":"Eden","dom":"Domaine de la Croisée","app":"Pouilly Fumé","coul":"Blanc","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14805225","des":"Les Petites Aubues","dom":"Domaine Tabordet","app":"Pouilly Fumé","coul":"Blanc","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"30700325","des":"Domaine de la Rossignole","dom":"","app":"Sancerre","coul":"Blanc","nf":307,"four":"CHERRIER FRERES","reg":"Loire"},{"code":"43800124","des":"La Gravelière","dom":"Domaine Joseph Mellot","app":"Sancerre","coul":"Blanc","nf":438,"four":"JOSEPH MELLOT","reg":"Loire"},{"code":"10702725","des":"Tradition","dom":"Château de Sancerre","app":"Sancerre","coul":"Blanc","nf":107,"four":"ORCHIDEES MAISONS DE VIN","reg":"Loire"},{"code":"11700224","des":"Domaine Serge Laloue","dom":"","app":"Sancerre","coul":"Blanc","nf":117,"four":"DOMAINE SERGE LALOUE","reg":"Loire"},{"code":"11700624","des":"Cuvée Silex","dom":"Domaine Serge Laloue","app":"Sancerre","coul":"Blanc","nf":117,"four":"DOMAINE SERGE LALOUE","reg":"Loire"},{"code":"14802023","des":"Pinot Noir","dom":"Les Athlètes du Vin","app":"Vin de France","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"12700124","des":"Collection","dom":"Domaine Mourat","app":"Mareuil Fiefs Vendéens","coul":"Rouge","nf":127,"four":"VIGNOBLES MOURAT SAS","reg":"Loire"},{"code":"12702024","des":"Grenouillère - Négrette","dom":"Domaine Mourat","app":"Val de Loire IGP","coul":"Rouge","nf":127,"four":"VIGNOBLES MOURAT SAS","reg":"Loire"},{"code":"35400123","des":"Première Vendange - Gamay","dom":"Henri Marionnet","app":"Touraine","coul":"Rouge","nf":354,"four":"HENRY MARIONNET","reg":"Loire"},{"code":"14801122","des":"Le Bois Jacou - Gamay","dom":"Domaine Mérieau","app":"Touraine","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14803516","des":"Souris et Boa - Pinot Noir","dom":"Domaine Mérieau","app":"Touraine","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14800921","des":"Gueule de  Boa - Côt","dom":"Domaine Mérieau","app":"Touraine","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"66700322","des":"So Franc","dom":"Domaine des Hauts Baigneux","app":"Touraine","coul":"Rouge","nf":667,"four":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","reg":"Loire"},{"code":"66700425","des":"Clos des Brancs - Grolleau","dom":"Domaine des Hauts Baigneux","app":"Vin de France","coul":"Rouge","nf":667,"four":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","reg":"Loire"},{"code":"10500122","des":"Murmure","dom":"Domaine des Guyons","app":"Saumur","coul":"Rouge","nf":105,"four":"BIMONT-DOMAINE DES GUYONS","reg":"Loire"},{"code":"14700522","des":"Château Fouquet","dom":"","app":"Saumur","coul":"Rouge","nf":147,"four":"DOMAINE FILLIATREAU","reg":"Loire"},{"code":"14700820","des":"Le Clos","dom":"Château Fouquet","app":"Saumur","coul":"Rouge","nf":147,"four":"DOMAINE FILLIATREAU","reg":"Loire"},{"code":"14700123","des":"Domaine Filliatreau","dom":"","app":"Saumur Champigny","coul":"Rouge","nf":147,"four":"DOMAINE FILLIATREAU","reg":"Loire"},{"code":"14804023","des":"l'Île Quatre Sous","dom":"Château Yvonne","app":"Saumur Champigny","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14700716","des":"l'Affûtée","dom":"Domaine Filliatreau","app":"Saumur Champigny","coul":"Rouge","nf":147,"four":"DOMAINE FILLIATREAU","reg":"Loire"},{"code":"14803223","des":"Château Yvonne","dom":"","app":"Saumur Champigny","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14800822","des":"Cabriole","dom":"Domaine de Montcy","app":"Cheverny","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14804124","des":"Avis de Vin Fort","dom":"Domaine Breton","app":"Bourgueil","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"10701525","des":"La Gardière","dom":"Domaine Pantaléon","app":"Saint-Nicolas-de-Bourgueil","coul":"Rouge","nf":107,"four":"ORCHIDEES MAISONS DE VIN","reg":"Loire"},{"code":"14800424","des":"Les Montils","dom":"Domaine de la Cotelleraie","app":"Saint-Nicolas-de-Bourgueil","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14800523","des":"Les Perruches","dom":"Domaine de la Cotelleraie","app":"Saint-Nicolas-de-Bourgueil","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"14803022","des":"Postumus","dom":"Domaine de la Cotelleraie","app":"Saint-Nicolas-de-Bourgueil","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"10701824","des":"La Mare au Diable","dom":"Domaine Gérald Tapin","app":"Chinon","coul":"Rouge","nf":107,"four":"ORCHIDEES MAISONS DE VIN","reg":"Loire"},{"code":"66700624","des":"Cuisine de ma Mère","dom":"Domaine Nicolas Grosbois","app":"Chinon","coul":"Rouge","nf":667,"four":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","reg":"Loire"},{"code":"14800224","des":"Chinon","dom":"Les Athlètes du Vin","app":"Chinon","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"10703122","des":"Les Boires","dom":"Domaine de la Perruche","app":"Chinon","coul":"Rouge","nf":107,"four":"ORCHIDEES MAISONS DE VIN","reg":"Loire"},{"code":"41800122DA","des":"Sérial Drinker","dom":"Les Mains Rouges","app":"Chinon","coul":"Rouge","nf":418,"four":"SARL LES MAINS ROUGES","reg":"Loire"},{"code":"14802721","des":"Domaine Alliet","dom":"","app":"Chinon","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"49700122","des":"Château de la Grille","dom":"","app":"Chinon","coul":"Rouge","nf":497,"four":"BAUDRY ET DUTOUR","reg":"Loire"},{"code":"41800319","des":"Le Clos Guillot","dom":"Les Mains Rouges","app":"Chinon","coul":"Rouge","nf":418,"four":"SARL LES MAINS ROUGES","reg":"Loire"},{"code":"66700924","des":"Glacière","dom":"Domaine Nicolas Grosbois","app":"Chinon","coul":"Rouge","nf":667,"four":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","reg":"Loire"},{"code":"66700820","des":"Gabarre","dom":"Domaine Nicolas Grosbois","app":"Chinon","coul":"Rouge","nf":667,"four":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","reg":"Loire"},{"code":"66700815","des":"Gabarre","dom":"Domaine Nicolas Grosbois","app":"Chinon","coul":"Rouge","nf":667,"four":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","reg":"Loire"},{"code":"66700217","des":"Clos du Noyer","dom":"Domaine Nicolas Grosbois","app":"Chinon","coul":"Rouge","nf":667,"four":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","reg":"Loire"},{"code":"66700221","des":"Clos du Noyer","dom":"Domaine Nicolas Grosbois","app":"Chinon","coul":"Rouge","nf":667,"four":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","reg":"Loire"},{"code":"66700711","des":"Clos du Noyer MAG — 150cl","dom":"Domaine Nicolas Grosbois","app":"Chinon","coul":"Rouge","nf":667,"four":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","reg":"Loire"},{"code":"43800323","des":"Domaine Jean Michel Sorbe","dom":"","app":"Reuilly","coul":"Rouge","nf":438,"four":"JOSEPH MELLOT","reg":"Loire"},{"code":"30700223","des":"Domaine du Loriot","dom":"","app":"Menetou Salon","coul":"Rouge","nf":307,"four":"CHERRIER FRERES","reg":"Loire"},{"code":"43800723","des":"Les Thureaux","dom":"Domaine Joseph Mellot","app":"Menetou Salon","coul":"Rouge","nf":438,"four":"JOSEPH MELLOT","reg":"Loire"},{"code":"14801823DA","des":"Domaine Van Remoortere","dom":"","app":"Menetou Salon","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"11700425","des":"Pinot Noir","dom":"Domaine Serge Laloue","app":"Côtes de la Charité IGP","coul":"Rouge","nf":117,"four":"DOMAINE SERGE LALOUE","reg":"Loire"},{"code":"43800423","des":"Le Rabault","dom":"Domaine Joseph Mellot","app":"Sancerre","coul":"Rouge","nf":438,"four":"JOSEPH MELLOT","reg":"Loire"},{"code":"10702622","des":"Tradition","dom":"Château de Sancerre","app":"Sancerre","coul":"Rouge","nf":107,"four":"ORCHIDEES MAISONS DE VIN","reg":"Loire"},{"code":"11700323","des":"Domaine Serge Laloue","dom":"","app":"Sancerre","coul":"Rouge","nf":117,"four":"DOMAINE SERGE LALOUE","reg":"Loire"},{"code":"11700723","des":"Les Rôties","dom":"Domaine Serge Laloue","app":"Sancerre","coul":"Rouge","nf":117,"four":"DOMAINE SERGE LALOUE","reg":"Loire"},{"code":"14803416","des":"Les Ardelles","dom":"Domaine les Terres d'Ocre","app":"Saint-Pourçain","coul":"Rouge","nf":148,"four":"VINI BE GOOD","reg":"Loire"},{"code":"242003NM","des":"Domaine Casanova","dom":"Vignerons d'Aghione","app":"Ile de Beauté IGP","coul":"Blanc","nf":242,"four":"LES VIGNERONS D'AGHIONE","reg":"Provence-Corse"},{"code":"20600423","des":"Château Vannières","dom":"","app":"Bandol","coul":"Blanc","nf":206,"four":"CHATEAU VANNIERES","reg":"Provence-Corse"},{"code":"242002NM","des":"Domaine Casanova","dom":"Vignerons d'Aghione","app":"Ile de Beauté IGP","coul":"Rouge","nf":242,"four":"LES VIGNERONS D'AGHIONE","reg":"Provence-Corse"},{"code":"13500622","des":"Grande Réserve","dom":"Château Saint Martin","app":"Cru Classé - Côtes de Provence","coul":"Rouge","nf":135,"four":"CHATEAU SAINT MARTIN","reg":"Provence-Corse"},{"code":"20600119","des":"Château Vannières","dom":"","app":"Bandol","coul":"Rouge","nf":206,"four":"CHATEAU VANNIERES","reg":"Provence-Corse"},{"code":"61900124","des":"Racinu  Ile de Beauté IGP","dom":"","app":"Ile de Beauté IGP","coul":"Rosé","nf":619,"four":"LES VINS BREBAN","reg":"Provence-Corse"},{"code":"61900225","des":"Domaine Casa Rossa","dom":"","app":"Ile de Beauté IGP","coul":"Rosé","nf":619,"four":"LES VINS BREBAN","reg":"Provence-Corse"},{"code":"242001NM","des":"Domaine Casanova","dom":"Vignerons d'Aghione","app":"Ile de Beauté IGP","coul":"Rosé","nf":242,"four":"LES VIGNERONS D'AGHIONE","reg":"Provence-Corse"},{"code":"72400122","des":"Villa Maestracci","dom":"Domaine Maestracci","app":"Calvi","coul":"Blanc","nf":724,"four":"DOMAINE MAESTRACCI","reg":"Provence-Corse"},{"code":"72400223","des":"E Signurine","dom":"Domaine Maestracci","app":"Calvi","coul":"Blanc","nf":724,"four":"DOMAINE MAESTRACCI","reg":"Provence-Corse"},{"code":"72400324","des":"Les Marottes d'Anaïs","dom":"Domaine Maestracci","app":"Calvi","coul":"Rouge","nf":724,"four":"DOMAINE MAESTRACCI","reg":"Provence-Corse"},{"code":"72400424","des":"E Prove rouge","dom":"Domaine Maestracci","app":"Calvi","coul":"Rouge","nf":724,"four":"DOMAINE MAESTRACCI","reg":"Provence-Corse"},{"code":"72400524","des":"E Prove blanc","dom":"Domaine Maestracci","app":"Calvi","coul":"Blanc","nf":724,"four":"DOMAINE MAESTRACCI","reg":"Provence-Corse"},{"code":"72400625","des":"E Prove rosé","dom":"Domaine Maestracci","app":"Calvi","coul":"Rosé","nf":724,"four":"DOMAINE MAESTRACCI","reg":"Provence-Corse"},{"code":"72300125","des":"Felice","dom":"Domaine Orenga de Gaffory","app":"Patrimonio","coul":"Blanc","nf":723,"four":"DOMAINE ORENGA DE GAFFORY","reg":"Provence-Corse"},{"code":"72300223","des":"Cuvée des Gouverneurs","dom":"Domaine Orenga de Gaffory","app":"Patrimonio","coul":"Rouge","nf":723,"four":"DOMAINE ORENGA DE GAFFORY","reg":"Provence-Corse"},{"code":"72300223","des":"Scala Santa","dom":"Domaine Orenga de Gaffory","app":"Vin de France","coul":"Rouge","nf":723,"four":"DOMAINE ORENGA DE GAFFORY","reg":"Provence-Corse"},{"code":"13500224","des":"Carpe Horam","dom":"","app":"IGP Méditerranée","coul":"Rosé","nf":135,"four":"CHATEAU SAINT MARTIN","reg":"Provence-Corse"},{"code":"31200424","des":"Perle de Roseline","dom":"Château Sainte Roseline","app":"IGP Mediterannée","coul":"Rosé","nf":312,"four":"CHATEAU SAINTE ROSELINE","reg":"Provence-Corse"},{"code":"27801125","des":"Esprit Méditerranée","dom":"Berne","app":"IGP Méditerranée","coul":"Rosé","nf":278,"four":"MDCV CHATEAU & VIGNOBLES EN PROVENCE","reg":"Provence-Corse"},{"code":"10300624","des":"Rosé Fleuri","dom":"Château Barbebelle","app":"Côteaux d'Aix en Provence","coul":"Rosé","nf":103,"four":"CHATEAU BARBEBELLE","reg":"Provence-Corse"},{"code":"10300524","des":"Cuvée Madeleine","dom":"Château Barbebelle","app":"Côteaux d'Aix en Provence","coul":"Rosé","nf":103,"four":"CHATEAU BARBEBELLE","reg":"Provence-Corse"},{"code":"10905524","des":"Choeurs de Provence","dom":"Maison Aujoux","app":"Côtes de Provence","coul":"Rosé","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Provence-Corse"},{"code":"61900224","des":"Château Castel des Maures","dom":"","app":"Côtes de Provence","coul":"Rosé","nf":619,"four":"LES VINS BREBAN","reg":"Provence-Corse"},{"code":"43600125","des":"La Belle Vie","dom":"Château d'Astros","app":"Côtes de Provence","coul":"Rosé","nf":436,"four":"CHATEAU ASTROS","reg":"Provence-Corse"},{"code":"13500724","des":"N°2 de Saint Martin","dom":"Château Saint Martin","app":"Côtes de Provence","coul":"Rosé","nf":135,"four":"CHATEAU SAINT MARTIN","reg":"Provence-Corse"},{"code":"31200324","des":"Cuvée Prestige","dom":"Château Sainte Roseline","app":"Côtes de Provence","coul":"Rosé","nf":312,"four":"CHATEAU SAINTE ROSELINE","reg":"Provence-Corse"},{"code":"4360025","des":"Amour","dom":"Château d'Astros","app":"Côtes de Provence","coul":"Rosé","nf":436,"four":"CHATEAU ASTROS","reg":"Provence-Corse"},{"code":"29400124","des":"Love by Léoube","dom":"Château Léoube","app":"Côtes de Provence","coul":"Rosé","nf":294,"four":"LEOUBE DISTRIBUTION","reg":"Provence-Corse"},{"code":"27800924","des":"Ultimate Provence","dom":"","app":"Côtes de Provence","coul":"Rosé","nf":278,"four":"MDCV CHATEAU & VIGNOBLES EN PROVENCE","reg":"Provence-Corse"},{"code":"13500125","des":"Grande Réserve","dom":"Château Saint Martin","app":"Cru Classé - Côtes de Provence","coul":"Rosé","nf":135,"four":"CHATEAU SAINT MARTIN","reg":"Provence-Corse"},{"code":"11900224","des":"Château Léoube","dom":"","app":"Côtes de Provence","coul":"Rosé","nf":119,"four":"CHATEAU LEOUBE","reg":"Provence-Corse"},{"code":"16000325","des":"Villa Zangre","dom":"Cros Pujol","app":"Pays d'Oc IGP","coul":"Blanc","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"38600225","des":"Le Petit Pont","dom":"Domaine Preignes Le Vieux","app":"Pays d'Oc IGP","coul":"Blanc","nf":386,"four":"LES DOMAINES ROBERT VIC","reg":"Occitanie"},{"code":"266010NM","des":"Les Gouyats","dom":"Vignobles Dubard","app":"Périgord IGP","coul":"Blanc","nf":266,"four":"VIGNOBLES DUBARD","reg":"Occitanie"},{"code":"13002224","des":"1892","dom":"Domaine Paul Mas","app":"Pays d'Oc IGP","coul":"Blanc","nf":130,"four":"LES DOMAINES PAUL MAS","reg":"Occitanie"},{"code":"10900124","des":"Petites Sardines - Sauvignon Blanc","dom":"Maison Aujoux","app":"Pays d'Oc IGP","coul":"Blanc","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Occitanie"},{"code":"10906225","des":"Les Chardonneuses - Chardonnay","dom":"Maison Aujoux","app":"Pays d'Oc IGP","coul":"Blanc","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Occitanie"},{"code":"13000625","des":"Cha Cha Cha - Chardonnay","dom":"Domaine Paul Mas","app":"Pays d'Oc IGP","coul":"Blanc","nf":130,"four":"LES DOMAINES PAUL MAS","reg":"Occitanie"},{"code":"31902925","des":"Héritage du Conseiller Chardonnay","dom":"Maison Bouchard Ainé","app":"Vin de France","coul":"Blanc","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Occitanie"},{"code":"53600124","des":"Chardonnay","dom":"Les Jamelles","app":"Pays d'Oc IGP","coul":"Blanc","nf":536,"four":"BADET CLEMENT","reg":"Occitanie"},{"code":"16000825","des":"Cuvée Antique Chardonnay","dom":"Château Grézan","app":"Pays d'Oc IGP","coul":"Blanc","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"16002825","des":"Cuvée Antique Chardonnay - MAGNUM","dom":"Château Grézan","app":"Pays d'Oc IGP","coul":"Blanc","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"13002324","des":"Cuvée Secrète - Chardonnay","dom":"Domaine Paul Mas","app":"Pays d'Oc IGP","coul":"Blanc","nf":130,"four":"LES DOMAINES PAUL MAS","reg":"Occitanie"},{"code":"19301122","des":"Albesco - Chardonnay","dom":"Vigouroux","app":"Côtes du Lot IGP","coul":"Blanc","nf":193,"four":"GEORGES VIGOUROUX","reg":"Occitanie"},{"code":"27101623","des":"Chardonnay Domaine de l'Aigle","dom":"Domaine de l'Aigle","app":"Limoux","coul":"Blanc","nf":271,"four":"GERARD BERTRAND","reg":"Occitanie"},{"code":"13000925","des":"Viognier Classique","dom":"Domaine Paul Mas","app":"Pays d'Oc IGP","coul":"Blanc","nf":130,"four":"LES DOMAINES PAUL MAS","reg":"Occitanie"},{"code":"13003025","des":"Cuvée Secrète - Viognier","dom":"Domaine Paul Mas","app":"Pays d'Oc IGP","coul":"Blanc","nf":130,"four":"LES DOMAINES PAUL MAS","reg":"Occitanie"},{"code":"11002424","des":"Viognier","dom":"Maison Delas","app":"Pays d'Oc IGP","coul":"Blanc","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Occitanie"},{"code":"43700224","des":"Grand Vin","dom":"Mas de Daumas Gassac","app":"Saint-Guilhem-Le-Désert IGP","coul":"Blanc","nf":437,"four":"MAS DE DAUMAS GASSAC","reg":"Occitanie"},{"code":"43700425","des":"l'Aven","dom":"Atelier Guibert","app":"Saint-Guilhem-Le-Désert IGP","coul":"Blanc","nf":437,"four":"MAS DE DAUMAS GASSAC","reg":"Occitanie"},{"code":"61600224","des":"Sauvignon","dom":"Domaine de Caude","app":"Côtes de Gascogne IGP","coul":"Blanc","nf":616,"four":"LA CAVE DU MOROS","reg":"Occitanie"},{"code":"13300124","des":"Classic","dom":"Domaine Tariquet","app":"Côtes de Gascogne IGP","coul":"Blanc","nf":133,"four":"DOMAINE TARIQUET","reg":"Occitanie"},{"code":"687002NM","des":"Regain de Fraicheur","dom":"Clos Regain","app":"Vin de France","coul":"Blanc","nf":687,"four":"CLOS REGAIN","reg":"Occitanie"},{"code":"24003025","des":"Sauvignon Blanc","dom":"Les Fumées Blanches","app":"Vin de France","coul":"Blanc","nf":240,"four":"PARDELA WINES","reg":"Occitanie"},{"code":"68700122","des":"…Sec","dom":"Clos Regain","app":"Jurançon","coul":"Blanc","nf":687,"four":"CLOS REGAIN","reg":"Occitanie"},{"code":"65800325","des":"Intemporel","dom":"Château Peyrepertuse","app":"Vin de France","coul":"Blanc","nf":658,"four":"CHATEAU PEYREPERTUSE","reg":"Occitanie"},{"code":"68700323","des":"La Côte des Brumes","dom":"Clos Regain","app":"Comté Tolosan IGP","coul":"Blanc","nf":687,"four":"CLOS REGAIN","reg":"Occitanie"},{"code":"27701124","des":"Cantaca","dom":"Domaine Lafage","app":"Vin de France","coul":"Blanc","nf":277,"four":"LAFAGE","reg":"Occitanie"},{"code":"27701224","des":"Cabirau - Grande Cuvée","dom":"Domaine Lafage","app":"Côtes du Roussillon","coul":"Blanc","nf":277,"four":"LAFAGE","reg":"Occitanie"},{"code":"68700421","des":"La Roche Mère","dom":"Clos Regain","app":"Jurançon","coul":"Blanc","nf":687,"four":"CLOS REGAIN","reg":"Occitanie"},{"code":"53800118","des":"l'Effrontée","dom":"Domaine de Vénus","app":"Côtes du Roussillon","coul":"Blanc","nf":538,"four":"DOMAINE DE VENUS","reg":"Occitanie"},{"code":"68002025","des":"Vermentino","dom":"Tramontane","app":"Côtes Catalanes IGP","coul":"Blanc","nf":680,"four":"LES CAVES DU ROUSSILON","reg":"Occitanie"},{"code":"68002125","des":"Famae (Macabeu)","dom":"Domaine Semper","app":"Côtes Catalanes IGP","coul":"Blanc","nf":680,"four":"LES CAVES DU ROUSSILON","reg":"Occitanie"},{"code":"53800224","des":"Blanc de Noirs","dom":"Domaine de Vénus","app":"Côtes Catalanes IGP","coul":"Blanc","nf":538,"four":"DOMAINE DE VENUS","reg":"Occitanie"},{"code":"30900225","des":"Le Cirque - Muscat - Moelleux","dom":"Vignerons de Tautavel","app":"Côtes Catalanes IGP","coul":"Blanc","nf":309,"four":"TERRES PLURIELLES","reg":"Occitanie"},{"code":"19301424","des":"Pigmentum - Moelleux","dom":"Vigouroux","app":"Côtes de Gascogne IGP","coul":"Blanc","nf":193,"four":"GEORGES VIGOUROUX","reg":"Occitanie"},{"code":"13301325","des":"Premières Grives - Moelleux","dom":"Domaine Tariquet","app":"Côtes de Gascogne IGP","coul":"Blanc","nf":133,"four":"DOMAINE TARIQUET","reg":"Occitanie"},{"code":"26600724","des":"Moelleux","dom":"Château Laulerie","app":"Côtes de Montravel","coul":"Blanc","nf":266,"four":"VIGNOBLES DUBARD","reg":"Occitanie"},{"code":"19200323","des":"Moelleux","dom":"Château Haute Fonrousse","app":"Monbazillac","coul":"Blanc","nf":192,"four":"MAISON RIVIERE","reg":"Occitanie"},{"code":"53800623","des":"Le Péché - 50cl","dom":"Domaine de Vénus","app":"Maury blanc","coul":"Blanc","nf":538,"four":"DOMAINE DE VENUS","reg":"Occitanie"},{"code":"160021NM","des":"BIB 5L - Villa Zangre","dom":"Cros Pujol","app":"Pays d'Oc IGP","coul":"Blanc","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"38600425","des":"BIB 10L -  Le Petit Pont","dom":"Domaine Preignes Le Vieux","app":"Pays d'Oc IGP","coul":"Blanc","nf":386,"four":"LES DOMAINES ROBERT VIC","reg":"Occitanie"},{"code":"266012NM","des":"Les Gouyats","dom":"Vignobles Dubard","app":"Périgord IGP","coul":"Rouge","nf":266,"four":"VIGNOBLES DUBARD","reg":"Occitanie"},{"code":"16000124","des":"Villa Zangre","dom":"Cros Pujol","app":"Pays d'Oc IGP","coul":"Rouge","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"38600124","des":"Le Petit Pont","dom":"Domaine Preignes Le Vieux","app":"Pays d'Oc IGP","coul":"Rouge","nf":386,"four":"LES DOMAINES ROBERT VIC","reg":"Occitanie"},{"code":"10906424","des":"Les Pinoteuses - Pinot Noir","dom":"Maison Aujoux","app":"Pays d'Oc IGP","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Occitanie"},{"code":"38600625","des":"Tradition - Pinot Noir","dom":"Domaine Preignes Le Vieux","app":"Pays d'Oc IGP","coul":"Rouge","nf":386,"four":"LES DOMAINES ROBERT VIC","reg":"Occitanie"},{"code":"31902825","des":"Héritage du Conseiller - Pinot Noir","dom":"Maison Bouchard Ainé","app":"Vin de France","coul":"Rouge","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Occitanie"},{"code":"13000124","des":"Pinot Noir - Réserve Estate","dom":"Domaine Paul Mas","app":"Pays d'Oc IGP","coul":"Rouge","nf":130,"four":"LES DOMAINES PAUL MAS","reg":"Occitanie"},{"code":"53600322","des":"Syrah","dom":"Les Jamelles","app":"Pays d'Oc IGP","coul":"Rouge","nf":536,"four":"BADET CLEMENT","reg":"Occitanie"},{"code":"16000723","des":"Le Bastion - Syrah & Viognier","dom":"Cros Pujol","app":"Pays d'Oc IGP","coul":"Rouge","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"13002923","des":"Cuvée Secrète - Syrah","dom":"Domaine Paul Mas","app":"Pays d'Oc IGP","coul":"Rouge","nf":130,"four":"LES DOMAINES PAUL MAS","reg":"Occitanie"},{"code":"19301023","des":"Gouleyant Pur Fruit - Malbec","dom":"Vigouroux","app":"Vin de France","coul":"Rouge","nf":193,"four":"GEORGES VIGOUROUX","reg":"Occitanie"},{"code":"26600523","des":"Merlot","dom":"Château Laulerie","app":"Bergerac","coul":"Rouge","nf":266,"four":"VIGNOBLES DUBARD","reg":"Occitanie"},{"code":"19301722","des":"Lucter - Malbec","dom":"Château de Haute Serre","app":"Cahors","coul":"Rouge","nf":193,"four":"GEORGES VIGOUROUX","reg":"Occitanie"},{"code":"19301820","des":"Georges - Malbec","dom":"Château de Haute Serre","app":"Cahors","coul":"Rouge","nf":193,"four":"GEORGES VIGOUROUX","reg":"Occitanie"},{"code":"68001823","des":"Clos Florent","dom":"Domaine Semper","app":"Maury","coul":"Rouge","nf":680,"four":"LES CAVES DU ROUSSILON","reg":"Occitanie"},{"code":"53800419","des":"Tentations","dom":"Domaine de Vénus","app":"Côtes du Roussillon","coul":"Rouge","nf":538,"four":"DOMAINE DE VENUS","reg":"Occitanie"},{"code":"53800517","des":"Passions","dom":"Domaine de Vénus","app":"Côtes du Roussillon Villages","coul":"Rouge","nf":538,"four":"DOMAINE DE VENUS","reg":"Occitanie"},{"code":"16500214","des":"de battre mon Cœur s'est arrêté","dom":"Clos des Fées","app":"Côtes du Roussillon Villages","coul":"Rouge","nf":165,"four":"GDD1 - LES GOUTTES DE DIEU","reg":"Occitanie"},{"code":"30900123","des":"Le Cirque","dom":"Vignerons de Tautavel","app":"Côtes Catalanes IGP","coul":"Rouge","nf":309,"four":"TERRES PLURIELLES","reg":"Occitanie"},{"code":"53800323","des":"Origines","dom":"Domaine de Vénus","app":"Côtes Catalanes IGP","coul":"Rouge","nf":538,"four":"DOMAINE DE VENUS","reg":"Occitanie"},{"code":"27701323","des":"Narassa","dom":"Domaine Lafage","app":"Côtes Catalanes IGP","coul":"Rouge","nf":277,"four":"LAFAGE","reg":"Occitanie"},{"code":"27701424","des":"Moutou","dom":"Domaine Lafage","app":"Côtes Catalanes IGP","coul":"Rouge","nf":277,"four":"LAFAGE","reg":"Occitanie"},{"code":"27101724","des":"Pinot Noir","dom":"Domaine de l'Aigle","app":"Haute Vallée de l'Aude IGP","coul":"Rouge","nf":271,"four":"GERARD BERTRAND","reg":"Occitanie"},{"code":"46400122CRD","des":"Chemin de Moscou","dom":"Domaine Gayda","app":"Pays d'Oc IGP","coul":"Rouge","nf":464,"four":"DOMAINE GAYDA","reg":"Occitanie"},{"code":"68001123","des":"Origine","dom":"Domaine Bertrand Bergé","app":"Fitou","coul":"Rouge","nf":680,"four":"LES CAVES DU ROUSSILON","reg":"Occitanie"},{"code":"68001222","des":"Jean Sirven","dom":"Domaine Bertrand Bergé","app":"Fitou","coul":"Rouge","nf":680,"four":"LES CAVES DU ROUSSILON","reg":"Occitanie"},{"code":"11800123","des":"L'Amourier","dom":"Luc Lapeyre","app":"Minervois","coul":"Rouge","nf":118,"four":"LUC LAPEYRE SAS","reg":"Occitanie"},{"code":"65800122","des":"le Vin de Messe","dom":"Château Peyrepertuse","app":"Corbières","coul":"Rouge","nf":658,"four":"CHATEAU PEYREPERTUSE","reg":"Occitanie"},{"code":"65800221","des":"Citadelle","dom":"Château Peyrepertuse","app":"Corbières","coul":"Rouge","nf":658,"four":"CHATEAU PEYREPERTUSE","reg":"Occitanie"},{"code":"64401022DA","des":"Clos Combe Long","dom":"Michel Raynaud","app":"Corbières","coul":"Rouge","nf":644,"four":"ANDREAS OSTER WEINKELLEREI KG","reg":"Occitanie"},{"code":"27101122","des":"Grand Vin","dom":"Château Villemajou","app":"Corbières-Boutenac","coul":"Rouge","nf":271,"four":"GERARD BERTRAND","reg":"Occitanie"},{"code":"64400919DA","des":"Tirébouché - B418","dom":"Michel Raynaud","app":"Corbières","coul":"Rouge","nf":644,"four":"ANDREAS OSTER WEINKELLEREI KG","reg":"Occitanie"},{"code":"27100322","des":"Grand Vin","dom":"Château l'Hospitalet","app":"Côteaux du Languedoc La Clape","coul":"Rouge","nf":271,"four":"GERARD BERTRAND","reg":"Occitanie"},{"code":"16001024","des":"Cuvée Antique","dom":"Château Grézan","app":"Faugères","coul":"Rouge","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"16003024","des":"Paradis des Cigales","dom":"Fabien Pujol","app":"Faugères","coul":"Rouge","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"16003124","des":"Risées en Mer","dom":"Fabien Pujol","app":"Faugères","coul":"Blanc","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"16001323","des":"Héritage","dom":"Château Grézan","app":"Faugères","coul":"Rouge","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"16002923","des":"Point de Vue","dom":"Fabien Pujol","app":"Faugères","coul":"Rouge","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"16001423","des":"Schistes Dorés","dom":"Château Grézan","app":"Faugères","coul":"Rouge","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"68001422","des":"Maison Jaune","dom":"Domaine Bardi d'Alquier","app":"Faugères","coul":"Rouge","nf":680,"four":"LES CAVES DU ROUSSILON","reg":"Occitanie"},{"code":"16001521","des":"Séculaire","dom":"Château Grézan","app":"Vin de France","coul":"Rouge","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"68001523","des":"Domaine du Roc d'Anglade","dom":"","app":"Pays du Gard IGP","coul":"Rouge","nf":680,"four":"LES CAVES DU ROUSSILON","reg":"Occitanie"},{"code":"16001923","des":"Cros Pujol","dom":"","app":"Terrasses du Larzac","coul":"Rouge","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"27100522","des":"Château La Sauvageonne Grand Vin","dom":"Gérard Bertrand","app":"Terrasse du Larzac","coul":"Rouge","nf":271,"four":"GERARD BERTRAND","reg":"Occitanie"},{"code":"68001615","des":"Clos des Cistes","dom":"Domaine Peyre Rose","app":"Vin de France","coul":"Rouge","nf":680,"four":"LES CAVES DU ROUSSILON","reg":"Occitanie"},{"code":"10900924","des":"Esprit Sauvage","dom":"Lambrusques","app":"Pic Saint Loup","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Occitanie"},{"code":"X0449","des":"Esprit Sauvage - MAGNUM","dom":"Lambrusques","app":"Pic Saint Loup","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Occitanie"},{"code":"10903323","des":"Les Secrets de la Louve","dom":"Lambrusques","app":"Pic Saint Loup","coul":"Rouge","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Occitanie"},{"code":"17700123","des":"L'Orphée","dom":"Mas Foulaquier","app":"Pic Saint Loup","coul":"Rouge","nf":177,"four":"DOMAINE MAS FOULAQUIER","reg":"Occitanie"},{"code":"68001024","des":"Arbouse","dom":"Mas Bruguière","app":"Pic Saint Loup","coul":"Rouge","nf":680,"four":"LES CAVES DU ROUSSILON","reg":"Occitanie"},{"code":"44446524","des":"la Bergerie","dom":"Domaine de l'Hortus","app":"Pic Saint Loup","coul":"Rouge","nf":444,"four":"LE CHANT DES CAVES MAD","reg":"Occitanie"},{"code":"43700123","des":"Grand Vin","dom":"Mas de Daumas Gassac","app":"Saint-Guilhem-Le-Désert IGP","coul":"Rouge","nf":437,"four":"MAS DE DAUMAS GASSAC","reg":"Occitanie"},{"code":"43700325","des":"Antarès","dom":"Atelier Guibert","app":"Saint-Guilhem-Le-Désert IGP","coul":"Rouge","nf":437,"four":"MAS DE DAUMAS GASSAC","reg":"Occitanie"},{"code":"43700524","des":"Pure","dom":"Atelier Guibert","app":"Saint-Guilhem-Le-Désert IGP","coul":"Rouge","nf":437,"four":"MAS DE DAUMAS GASSAC","reg":"Occitanie"},{"code":"16000224","des":"Villa Zangre","dom":"Cros Pujol","app":"Pays d'Oc IGP","coul":"Rosé","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"38601025","des":"Le Petit Pont","dom":"Domaine Preignes Le Vieux","app":"Pays d'Oc IGP","coul":"Rosé","nf":386,"four":"LES DOMAINES ROBERT VIC","reg":"Occitanie"},{"code":"10901825","des":"Moment de Plaisir","dom":"Maison Aujoux","app":"Pays d'Oc IGP","coul":"Rosé","nf":109,"four":"AUJOUX DEPAGNEUX","reg":"Occitanie"},{"code":"27100125","des":"Gris Blanc","dom":"Gérard Bertrand","app":"Pays d'Oc IGP","coul":"Rosé","nf":271,"four":"GERARD BERTRAND","reg":"Occitanie"},{"code":"160022NM","des":"BIB 5L - Villa Zangre","dom":"Cros Pujol","app":"Pays d'Oc IGP","coul":"Rosé","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Occitanie"},{"code":"38600324","des":"BIB 10L - Le Petit Pont","dom":"Domaine Preignes Le Vieux","app":"Pays d'Oc IGP","coul":"Rosé","nf":386,"four":"LES DOMAINES ROBERT VIC","reg":"Occitanie"},{"code":"15900225","des":"Pinot Grigio - Vivolo di Sasso","dom":"Maison Botter","app":"Delle Venezie DOC","coul":"Blanc","nf":159,"four":"RAFFIN VINI","reg":"Reste du Monde"},{"code":"15901125","des":"Chardonnay","dom":"Maison Tormaresca","app":"Puglia IGT","coul":"Blanc","nf":159,"four":"RAFFIN VINI","reg":"Reste du Monde"},{"code":"24000924","des":"Nina","dom":"Maison Botter","app":"Delle Venezie DOC","coul":"Rosé","nf":240,"four":"PARDELA WINES","reg":"Reste du Monde"},{"code":"15902222","des":"Sangiovese","dom":"Fantini","app":"Sangiovese IGT","coul":"Rouge","nf":159,"four":"RAFFIN VINI","reg":"Reste du Monde"},{"code":"15900724","des":"Primitivo","dom":"Maison Caleo","app":"Salento IGT","coul":"Rouge","nf":159,"four":"RAFFIN VINI","reg":"Reste du Monde"},{"code":"24001825","des":"Ca Vittoria - Appasimento","dom":"Maison Botter","app":"Puglia IGT","coul":"Rouge","nf":240,"four":"PARDELA WINES","reg":"Reste du Monde"},{"code":"15900924","des":"La Piuma","dom":"","app":"Chianti DOCG","coul":"Rouge","nf":159,"four":"RAFFIN VINI","reg":"Reste du Monde"},{"code":"15901723","des":"Nero d'Avola - Il Passo Verde","dom":"Vigneti Zabu","app":"Sicilia DOC","coul":"Rouge","nf":159,"four":"RAFFIN VINI","reg":"Reste du Monde"},{"code":"61600123","des":"Tinto","dom":"Bodegas Navajas","app":"Rioja DO","coul":"Rouge","nf":616,"four":"LA CAVE DU MOROS","reg":"Reste du Monde"},{"code":"24000522DA","des":"Vina Eguia","dom":"Bodegas Muriel","app":"Rioja DO","coul":"Rouge","nf":240,"four":"PARDELA WINES","reg":"Reste du Monde"},{"code":"68700620","des":"Reserva","dom":"Manzanos","app":"Rioja DO","coul":"Rouge","nf":687,"four":"CLOS REGAIN","reg":"Reste du Monde"},{"code":"68700715","des":"Gran Reserva","dom":"Manzanos","app":"Rioja DO","coul":"Rouge","nf":687,"four":"CLOS REGAIN","reg":"Reste du Monde"},{"code":"68700523","des":"111 Red Blend","dom":"Manzanos","app":"Navarra DO","coul":"Rouge","nf":687,"four":"CLOS REGAIN","reg":"Reste du Monde"},{"code":"10702524","des":"Chenin Blanc","dom":"White Canyon","app":"Afrique du Sud","coul":"Blanc","nf":107,"four":"ORCHIDEES MAISONS DE VIN","reg":"Reste du Monde"},{"code":"44900320DA","des":"Cabernet Sauvignon Classico","dom":"Passion des Andes","app":"Mendoza","coul":"Rouge","nf":449,"four":"VIGNES DES ANDES","reg":"Reste du Monde"},{"code":"44900420DA","des":"Petit Verdot","dom":"Passion des Andes","app":"Mendoza","coul":"Rouge","nf":449,"four":"VIGNES DES ANDES","reg":"Reste du Monde"},{"code":"44900220","des":"Corte (rupture jusqu'à fin mars 2026)","dom":"Passion des Andes","app":"Mendoza","coul":"Rouge","nf":449,"four":"VIGNES DES ANDES","reg":"Reste du Monde"},{"code":"44900321DA","des":"Cabernet Sauvignon Classico","dom":"Passion des Andes","app":"Mendoza","coul":"Rouge","nf":449,"four":"VIGNES DES ANDES","reg":"Reste du Monde"},{"code":"44900121DA","des":"Malbec","dom":"Passion des Andes","app":"Mendoza","coul":"Rouge","nf":449,"four":"VIGNES DES ANDES","reg":"Reste du Monde"},{"code":"44900519","des":"Malbec Collection","dom":"Passion des Andes","app":"Mendoza","coul":"Rouge","nf":449,"four":"VIGNES DES ANDES","reg":"Reste du Monde"},{"code":"44900721","des":"Cabernet Sauvignon Collection","dom":"Passion des Andes","app":"Mendoza","coul":"Rouge","nf":449,"four":"VIGNES DES ANDES","reg":"Reste du Monde"},{"code":"44900620","des":"Petit Verdot Collection","dom":"Passion des Andes","app":"Mendoza","coul":"Rouge","nf":449,"four":"VIGNES DES ANDES","reg":"Reste du Monde"},{"code":"44900820","des":"Corte Gran Reserva","dom":"Passion des Andes","app":"Mendoza","coul":"Rouge","nf":449,"four":"VIGNES DES ANDES","reg":"Reste du Monde"},{"code":"44900922","des":"Sauvignon Blanc","dom":"Passion des Andes","app":"Mendoza","coul":"Blanc","nf":449,"four":"VIGNES DES ANDES","reg":"Reste du Monde"},{"code":"240025NMDA","des":"Ca del Console","dom":"Maison Botter","app":"Prosecco DOC","coul":"Bulles","nf":240,"four":"PARDELA WINES","reg":"Bulles"},{"code":"319030NM","des":"Brut de Chardonnay","dom":"Maison Bouchard Ainé","app":"Vin de France","coul":"Bulles","nf":319,"four":"MAISON GABRIEL MEFFRE / BOISSET","reg":"Bulles"},{"code":"667001NM","des":"Extra Bulles - Pet Nat","dom":"Nicolas Grosbois","app":"Vin de France","coul":"Bulles","nf":667,"four":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","reg":"Bulles"},{"code":"110054NM","des":"1/2 Brut Classic - 37,5cl","dom":"Deutz","app":"Champagne","coul":"Bulles","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Bulles"},{"code":"336001NM","des":"Blanc de Noirs - Héritage","dom":"Baudry","app":"Champagne","coul":"Bulles","nf":336,"four":"CHAMPAGNE BAUDRY","reg":"Bulles"},{"code":"111002NM","des":"Cordon Bleu Brut","dom":"De Venoge","app":"Champagne","coul":"Bulles","nf":111,"four":"DE VENOGE - CHAMPAGNE","reg":"Bulles"},{"code":"606001NM","des":"15 Crus","dom":"Virginie T.","app":"Champagne","coul":"Bulles","nf":606,"four":"CHAMPAGNE VIRGINIE T","reg":"Bulles"},{"code":"550004NM","des":"Cuvée Royale Brut","dom":"Joseph Perrier","app":"Champagne","coul":"Bulles","nf":550,"four":"JOSEPH PERRIER KRESSMANN","reg":"Bulles"},{"code":"323001NM","des":"Carte d'Or","dom":"Drappier","app":"Champagne","coul":"Bulles","nf":323,"four":"CHAMPAGNE DRAPPIER","reg":"Bulles"},{"code":"252005NM","des":"Brut Extra","dom":"Gosset","app":"Champagne","coul":"Bulles","nf":252,"four":"CHAMPAGNE GOSSET","reg":"Bulles"},{"code":"165008NM","des":"Brut Classic","dom":"Deutz","app":"Champagne","coul":"Bulles","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Bulles"},{"code":"444648NM","des":"Brut Nature - Zéro Dosage","dom":"Drappier","app":"Champagne","coul":"Bulles","nf":444,"four":"LE CHANT DES CAVES MAD","reg":"Bulles"},{"code":"252001NM","des":"Grande Réserve","dom":"Gosset","app":"Champagne","coul":"Bulles","nf":252,"four":"CHAMPAGNE GOSSET","reg":"Bulles"},{"code":"369001NM","des":"Brut Réserve","dom":"Charles Heidsieck","app":"Champagne","coul":"Bulles","nf":369,"four":"CHAMPAGNE CHARLES HEIDSIECK","reg":"Bulles"},{"code":"475004NM","des":"Cuvée Esprit Nature - Extra Brut","dom":"Henri Giraud","app":"Champagne","coul":"Bulles","nf":475,"four":"DOMAINE HENRI GIRAUD","reg":"Bulles"},{"code":"444712NM","des":"Réserve Impérial","dom":"Moët & Chandon","app":"Champagne","coul":"Bulles","nf":444,"four":"LE CHANT DES CAVES MAD","reg":"Bulles"},{"code":"444646NM","des":"Cuvée Charles de Gaulle","dom":"Drappier","app":"Champagne","coul":"Bulles","nf":444,"four":"LE CHANT DES CAVES MAD","reg":"Bulles"},{"code":"444731NM","des":"Brut Carte Jaune","dom":"Veuve Clicquot","app":"Champagne","coul":"Bulles","nf":444,"four":"LE CHANT DES CAVES MAD","reg":"Bulles"},{"code":"165063NM","des":"Brut Rosé","dom":"Deutz","app":"Champagne","coul":"Bulles","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Bulles"},{"code":"252004NM","des":"Grand Brut Rosé","dom":"Gosset","app":"Champagne","coul":"Bulles","nf":252,"four":"CHAMPAGNE GOSSET","reg":"Bulles"},{"code":"252003NM","des":"Grand Blanc de Blancs","dom":"Gosset","app":"Champagne","coul":"Bulles","nf":252,"four":"CHAMPAGNE GOSSET","reg":"Bulles"},{"code":"444711NM","des":"Brut Special Cuvée","dom":"Bollinger","app":"Champagne","coul":"Bulles","nf":444,"four":"LE CHANT DES CAVES MAD","reg":"Bulles"},{"code":"379016NM","des":"Cuvée 748","dom":"Jacquesson","app":"Champagne","coul":"Bulles","nf":379,"four":"CHAMPAGNE JACQUESSON","reg":"Bulles"},{"code":"16501014","des":"Amour de Deutz","dom":"Deutz","app":"Champagne","coul":"Bulles","nf":165,"four":"GDD1 - LES GOUTTES DE DIEU","reg":"Bulles"},{"code":"515010NM","des":"Dom Pérignon","dom":"Moët & Chandon","app":"Champagne","coul":"Bulles","nf":515,"four":"LE CHANT DES CAVES ACHAT","reg":"Bulles"},{"code":"252010NM","des":"Grande Réserve - MAGNUM","dom":"Gosset","app":"Champagne","coul":"Bulles","nf":252,"four":"CHAMPAGNE GOSSET","reg":"Bulles"},{"code":"252011NM","des":"Brut Extra - MAGNUM","dom":"Gosset","app":"Champagne","coul":"Bulles","nf":252,"four":"CHAMPAGNE GOSSET","reg":"Bulles"},{"code":"165009NM","des":"Brut Classic - MAGNUM","dom":"Deutz","app":"Champagne","coul":"Bulles","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Bulles"},{"code":"165259NM","des":"Brut Classic - JEROBOAM — 300cl","dom":"Deutz","app":"Champagne","coul":"Bulles","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Bulles"},{"code":"165260NM","des":"Brut Classic - MATHUSALEM","dom":"Deutz","app":"Champagne","coul":"Bulles","nf":110,"four":"DEUTZ DELAS DIFFUSION","reg":"Bulles"},{"code":"273001NM","des":"Menthe Verte — 70cl","dom":"A. Petit","app":"Liqueur","coul":"Spiritueux","nf":273,"four":"SAS MOISANS INTERNATIONAL BEVERAGE","reg":"Spiritueux"},{"code":"273002NM","des":"Menthe Blanche — 70cl","dom":"A. Petit","app":"Liqueur","coul":"Spiritueux","nf":273,"four":"SAS MOISANS INTERNATIONAL BEVERAGE","reg":"Spiritueux"},{"code":"240021NMDA","des":"Limonello — 70cl","dom":"Silvio Carta","app":"Liqueur","coul":"Spiritueux","nf":240,"four":"PARDELA WINES","reg":"Spiritueux"},{"code":"165006NM","des":"Verte — 70cl","dom":"Chartreuse","app":"Liqueur","coul":"Spiritueux","nf":165,"four":"GDD1 - LES GOUTTES DE DIEU","reg":"Spiritueux"},{"code":"165004NM","des":"Jaune — 70cl","dom":"Chartreuse","app":"Liqueur","coul":"Spiritueux","nf":165,"four":"GDD1 - LES GOUTTES DE DIEU","reg":"Spiritueux"},{"code":"240022NMDA","des":"Cognac - Poire — 70cl","dom":"Noces Royales","app":"Liqueur","coul":"Spiritueux","nf":240,"four":"PARDELA WINES","reg":"Spiritueux"},{"code":"240026NM","des":"Cognac - Poire - JERO - 300cl","dom":"Noces Royales","app":"Liqueur","coul":"Spiritueux","nf":240,"four":"PARDELA WINES","reg":"Spiritueux"},{"code":"240020NMDAC","des":"Yu Gin — 70cl","dom":"","app":"Gin","coul":"Spiritueux","nf":240,"four":"PARDELA WINES","reg":"Spiritueux"},{"code":"240029NM","des":"Sans Alcool — 70cl","dom":"Yu NO","app":"Gin","coul":"Spiritueux","nf":240,"four":"PARDELA WINES","reg":"Spiritueux"},{"code":"160024NM","des":"Grézan des Garrigues — 70cl","dom":"Château Grézan","app":"Gin","coul":"Spiritueux","nf":160,"four":"FAMILLE CROS-PUJOL","reg":"Spiritueux"},{"code":"264001NMDA","des":"Bristol Method — 70cl","dom":"Smeaton's","app":"Gin","coul":"Spiritueux","nf":264,"four":"PURE DISTILLED SPIRITS COMPANY LIMITED","reg":"Spiritueux"},{"code":"152004NM","des":"Pur Malt - Chant du Coq N2 — 70cl","dom":"Maison Soligny","app":"Whisky","coul":"Spiritueux","nf":152,"four":"V & V GODIER","reg":"Spiritueux"},{"code":"152005NM","des":"Whisky Single Malt - Air de Plaine — 70cl","dom":"Maison Soligny","app":"Whisky","coul":"Spiritueux","nf":152,"four":"V & V GODIER","reg":"Spiritueux"}];
-const AGENTS = [{"code": "ADA", "nom": "AURELIEN DAMELINCOURT"}, {"code": "MON", "nom": "Alexandre MONTCEL"}, {"code": "KOU", "nom": "Alisson KOUROUYAN"}, {"code": "BBV", "nom": "Benoit BRUMENT"}, {"code": "CAI", "nom": "CAILLE Jérôme"}, {"code": "DAM", "nom": "DAMELINCOURT (Ludovic)"}, {"code": "DUA", "nom": "DURAND ALEXIS"}, {"code": "DUB", "nom": "DURAND BENOIT"}, {"code": "COL", "nom": "David COLLIOT"}, {"code": "GUE", "nom": "GUILLAUME BOUTTIER-GUESNON"}, {"code": "GAT", "nom": "Grégory GATÉ"}, {"code": "JYR", "nom": "JEAN YVES ROMAIN"}, {"code": "CDV", "nom": "Jean-Baptiste Precetti"}, {"code": "LEL", "nom": "LELLA Michele"}, {"code": "JOU", "nom": "Lionel JOUBERT GAILLARD"}, {"code": "MOR", "nom": "MOREAU Stéphane"}, {"code": "MOU", "nom": "MOUTON (Olivier)"}, {"code": "ALL", "nom": "Marie-Laure ALLARD"}, {"code": "GAI", "nom": "Pierre GAILLAC"}, {"code": "REN", "nom": "RENAULD Joseph"}, {"code": "KER", "nom": "Ronan KERVENNAL"}, {"code": "SCH", "nom": "SCHMIDT Amaury"}, {"code": "TAF", "nom": "TAFFOREAU (Olivier)"}, {"code": "SOU", "nom": "Thomas SOUBIRAN"}];
-const REGION_ORDER = ["Île-de-France", "Jura", "Alsace", "Bordeaux", "Beaujolais", "Bourgogne", "Rhône", "Loire", "Provence-Corse", "Occitanie", "Reste du Monde", "Bulles", "Spiritueux"];
-const BUILD = "2026-08-26b";
-const CONFIG = {
-  // Vide = mode autonome (l'agent télécharge le fichier et l'envoie).
-  // URL du Worker Cloudflare = mode centralisé : le relevé part au serveur,
-  // Yasmina reçoit automatiquement le fichier consolidé de tous les agents en fin de mois.
-  WEBHOOK_URL: "https://echantillons-worker.lecoindalex.workers.dev/submit",
-  YASMINA_EMAIL: "adv@vinom.fr"
-};
-const CENTRAL = !!CONFIG.WEBHOOK_URL;
+const LUN = {"t":[["2026-07-01T21:36","Cap"],["2026-07-04T04:21","Aqr"],["2026-07-06T02:21","Psc"],["2026-07-08T20:53","Ari"],["2026-07-10T14:31","Tau"],["2026-07-13T01:35","Gem"],["2026-07-14T21:57","Cnc"],["2026-07-16T06:40","Leo"],["2026-07-18T20:28","Vir"],["2026-07-22T07:36","Lib"],["2026-07-24T05:58","Sco"],["2026-07-24T19:16","Oph"],["2026-07-26T08:53","Sgr"],["2026-07-29T03:49","Cap"],["2026-07-31T10:07","Aqr"],["2026-08-02T07:51","Psc"],["2026-08-05T02:56","Ari"],["2026-08-06T21:38","Tau"],["2026-08-09T10:36","Gem"],["2026-08-11T07:57","Cnc"],["2026-08-12T16:55","Leo"],["2026-08-15T06:04","Vir"],["2026-08-18T15:30","Lib"],["2026-08-20T13:21","Sco"],["2026-08-21T02:34","Oph"],["2026-08-22T16:08","Sgr"],["2026-08-25T11:05","Cap"],["2026-08-27T17:00","Aqr"],["2026-08-29T14:05","Psc"],["2026-09-01T08:22","Ari"],["2026-09-03T03:11","Tau"],["2026-09-05T17:22","Gem"],["2026-09-07T16:04","Cnc"],["2026-09-09T01:51","Leo"],["2026-09-11T15:37","Vir"],["2026-09-15T00:14","Lib"],["2026-09-16T21:30","Sco"],["2026-09-17T10:37","Oph"],["2026-09-19T00:03","Sgr"],["2026-09-21T19:18","Cap"],["2026-09-24T01:21","Aqr"],["2026-09-25T22:04","Psc"],["2026-09-28T15:03","Ari"],["2026-09-30T08:59","Tau"],["2026-10-02T22:46","Gem"],["2026-10-04T22:06","Cnc"],["2026-10-06T08:40","Leo"],["2026-10-08T23:47","Vir"],["2026-10-12T08:49","Lib"],["2026-10-14T05:47","Sco"],["2026-10-14T18:49","Oph"],["2026-10-16T08:06","Sgr"],["2026-10-19T03:44","Cap"],["2026-10-21T10:30","Aqr"],["2026-10-23T07:35","Psc"],["2026-10-25T23:00","Ari"],["2026-10-27T15:53","Tau"],["2026-10-30T03:56","Gem"],["2026-11-01T02:31","Cnc"],["2026-11-02T13:04","Leo"],["2026-11-05T05:04","Vir"],["2026-11-08T15:16","Lib"],["2026-11-10T12:24","Sco"],["2026-11-11T01:24","Oph"],["2026-11-12T14:37","Sgr"],["2026-11-15T10:28","Cap"],["2026-11-17T18:09","Aqr"],["2026-11-19T16:15","Psc"],["2026-11-22T09:35","Ari"],["2026-11-24T02:12","Tau"],["2026-11-26T12:40","Gem"],["2026-11-28T09:39","Cnc"],["2026-11-29T19:13","Leo"],["2026-12-02T10:28","Vir"],["2026-12-05T21:23","Lib"],["2026-12-07T18:56","Sco"],["2026-12-08T08:01","Oph"],["2026-12-09T21:18","Sgr"],["2026-12-12T17:10","Cap"],["2026-12-15T01:21","Aqr"],["2026-12-17T00:31","Psc"],["2026-12-19T19:53","Ari"],["2026-12-21T13:23","Tau"],["2026-12-23T23:47","Gem"],["2026-12-25T19:36","Cnc"],["2026-12-27T03:58","Leo"],["2026-12-29T17:07","Vir"],["2027-01-02T03:03","Lib"],["2027-01-04T00:47","Sco"],["2027-01-04T13:58","Oph"],["2027-01-06T03:26","Sgr"],["2027-01-08T23:15","Cap"],["2027-01-11T07:20","Aqr"],["2027-01-13T06:54","Psc"],["2027-01-16T04:03","Ari"],["2027-01-17T23:07","Tau"],["2027-01-20T11:10","Gem"],["2027-01-22T07:11","Cnc"],["2027-01-23T15:01","Leo"],["2027-01-26T02:14","Vir"],["2027-01-29T09:49","Lib"],["2027-01-31T07:03","Sco"],["2027-01-31T20:11","Oph"],["2027-02-02T09:41","Sgr"],["2027-02-05T05:33","Cap"],["2027-02-07T13:19","Aqr"],["2027-02-09T12:32","Psc"],["2027-02-12T10:02","Ari"],["2027-02-14T06:12","Tau"],["2027-02-16T20:30","Gem"],["2027-02-18T17:53","Cnc"],["2027-02-20T02:13","Leo"],["2027-02-22T12:59","Vir"],["2027-02-25T18:26","Lib"],["2027-02-27T14:39","Sco"],["2027-02-28T03:35","Oph"],["2027-03-01T16:45","Sgr"],["2027-03-04T12:36","Cap"],["2027-03-06T20:14","Aqr"],["2027-03-08T18:59","Psc"],["2027-03-11T15:35","Ari"],["2027-03-13T11:38","Tau"],["2027-03-16T03:04","Gem"],["2027-03-18T01:57","Cnc"],["2027-03-19T11:21","Leo"],["2027-03-21T23:14","Vir"],["2027-03-25T04:05","Lib"],["2027-03-26T23:27","Sco"],["2027-03-27T12:08","Oph"],["2027-03-29T01:47","Sgr"],["2027-03-31T21:24","Cap"],["2027-04-03T05:13","Aqr"],["2027-04-05T03:53","Psc"],["2027-04-07T23:31","Ari"],["2027-04-09T18:41","Tau"],["2027-04-12T09:25","Gem"],["2027-04-14T08:44","Cnc"],["2027-04-15T18:52","Leo"],["2027-04-18T08:21","Vir"],["2027-04-21T14:10","Lib"],["2027-04-23T09:20","Sco"],["2027-04-23T21:54","Oph"],["2027-04-25T10:10","Sgr"],["2027-04-28T05:28","Cap"],["2027-04-30T13:38","Aqr"],["2027-05-02T12:42","Psc"],["2027-05-05T08:15","Ari"],["2027-05-07T02:41","Tau"],["2027-05-09T15:51","Gem"],["2027-05-11T14:16","Cnc"],["2027-05-13T00:13","Leo"],["2027-05-15T14:22","Vir"],["2027-05-18T21:37","Lib"],["2027-05-20T17:10","Sco"],["2027-05-21T05:47","Oph"],["2027-05-22T18:02","Sgr"],["2027-05-25T13:10","Cap"],["2027-05-27T21:38","Aqr"],["2027-05-29T21:24","Psc"],["2027-06-01T17:55","Ari"],["2027-06-03T12:23","Tau"],["2027-06-06T00:30","Gem"],["2027-06-07T21:34","Cnc"],["2027-06-09T06:34","Leo"],["2027-06-11T19:47","Vir"],["2027-06-15T03:32","Lib"],["2027-06-16T23:39","Sco"],["2027-06-17T12:23","Oph"],["2027-06-19T00:53","Sgr"],["2027-06-21T20:05","Cap"],["2027-06-24T04:42","Aqr"],["2027-06-26T05:02","Psc"],["2027-06-29T03:06","Ari"],["2027-06-30T22:27","Tau"],["2027-07-03T10:49","Gem"],["2027-07-05T07:05","Cnc"],["2027-07-06T15:08","Leo"],["2027-07-09T02:29","Vir"],["2027-07-12T09:06","Lib"],["2027-07-14T05:19","Sco"],["2027-07-14T18:09","Oph"],["2027-07-16T06:54","Sgr"],["2027-07-19T02:21","Cap"],["2027-07-21T10:56","Aqr"],["2027-07-23T11:27","Psc"],["2027-07-26T10:45","Ari"],["2027-07-28T07:23","Tau"],["2027-07-30T21:16","Gem"],["2027-08-01T17:51","Cnc"],["2027-08-03T01:32","Leo"],["2027-08-05T11:19","Vir"],["2027-08-08T15:44","Lib"],["2027-08-10T11:21","Sco"],["2027-08-11T00:06","Oph"],["2027-08-12T12:49","Sgr"],["2027-08-15T08:25","Cap"],["2027-08-17T16:55","Aqr"],["2027-08-19T17:14","Psc"],["2027-08-22T16:48","Ari"],["2027-08-24T14:21","Tau"],["2027-08-27T06:14","Gem"],["2027-08-29T04:05","Cnc"],["2027-08-30T12:16","Leo"],["2027-09-01T21:42","Vir"],["2027-09-05T00:10","Lib"],["2027-09-06T18:43","Sco"],["2027-09-07T07:14","Oph"],["2027-09-08T19:29","Sgr"],["2027-09-11T14:55","Cap"],["2027-09-13T23:23","Aqr"],["2027-09-15T23:24","Psc"],["2027-09-18T22:21","Ari"],["2027-09-20T19:54","Tau"],["2027-09-23T12:57","Gem"],["2027-09-25T12:18","Cnc"],["2027-09-26T21:31","Leo"],["2027-09-29T08:03","Vir"],["2027-10-02T09:56","Lib"],["2027-10-04T03:34","Sco"],["2027-10-04T15:49","Oph"],["2027-10-06T03:23","Sgr"],["2027-10-08T22:15","Cap"],["2027-10-11T06:45","Aqr"],["2027-10-13T06:43","Psc"],["2027-10-16T04:55","Ari"],["2027-10-18T01:44","Tau"],["2027-10-20T18:20","Gem"],["2027-10-22T18:17","Cnc"],["2027-10-24T04:22","Leo"],["2027-10-26T16:40","Vir"],["2027-10-29T19:37","Lib"],["2027-10-31T12:01","Sco"],["2027-11-01T00:07","Oph"],["2027-11-02T11:10","Sgr"],["2027-11-05T05:19","Cap"],["2027-11-07T13:51","Aqr"],["2027-11-09T14:08","Psc"],["2027-11-12T12:17","Ari"],["2027-11-14T08:26","Tau"],["2027-11-16T23:33","Gem"],["2027-11-18T22:43","Cnc"],["2027-11-20T08:43","Leo"],["2027-11-22T21:57","Vir"],["2027-11-26T02:42","Lib"],["2027-11-27T20:38","Sco"],["2027-11-28T08:48","Oph"],["2027-11-29T19:50","Sgr"],["2027-12-02T13:32","Cap"],["2027-12-04T22:01","Aqr"],["2027-12-06T22:46","Psc"],["2027-12-09T21:54","Ari"],["2027-12-11T18:11","Tau"],["2027-12-14T08:17","Gem"],["2027-12-16T06:01","Cnc"],["2027-12-17T15:02","Leo"],["2027-12-20T03:19","Vir"],["2027-12-23T08:47","Lib"],["2027-12-25T03:31","Sco"],["2027-12-25T15:53","Oph"],["2027-12-27T03:20","Sgr"],["2027-12-29T21:10","Cap"],["2028-01-01T05:34","Aqr"],["2028-01-03T06:38","Psc"],["2028-01-06T07:12","Ari"],["2028-01-08T04:31","Tau"],["2028-01-10T19:07","Gem"],["2028-01-12T16:08","Cnc"],["2028-01-14T00:07","Leo"],["2028-01-16T10:15","Vir"],["2028-01-19T14:16","Lib"],["2028-01-21T09:06","Sco"],["2028-01-21T21:35","Oph"],["2028-01-23T09:26","Sgr"],["2028-01-26T03:50","Cap"],["2028-01-28T12:15","Aqr"],["2028-01-30T13:20","Psc"],["2028-02-02T14:51","Ari"],["2028-02-04T13:29","Tau"],["2028-02-07T06:00","Gem"],["2028-02-09T03:37","Cnc"],["2028-02-10T11:24","Leo"],["2028-02-12T19:58","Vir"],["2028-02-15T21:16","Lib"],["2028-02-17T15:09","Sco"],["2028-02-18T03:28","Oph"],["2028-02-19T15:10","Sgr"],["2028-02-22T09:50","Cap"],["2028-02-24T18:25","Aqr"],["2028-02-26T19:23","Psc"],["2028-02-29T20:54","Ari"]],"c0":"Sgr","d0":"2026-07-01T02:00","d1":"2028-03-01T01:00","n":[["2026-07-04T09:50","ascendant"],["2026-07-17T02:28","descendant"],["2026-07-31T13:53","ascendant"],["2026-08-13T11:56","descendant"],["2026-08-27T20:45","ascendant"],["2026-09-09T21:17","descendant"],["2026-09-24T04:39","ascendant"],["2026-10-07T03:19","descendant"],["2026-10-21T10:52","ascendant"],["2026-11-03T04:02","descendant"],["2026-11-17T12:48","ascendant"],["2026-11-30T04:33","descendant"],["2026-12-14T14:02","ascendant"],["2026-12-27T08:55","descendant"],["2027-01-10T16:57","ascendant"],["2027-01-23T18:26","descendant"],["2027-02-06T22:43","ascendant"],["2027-02-20T05:40","descendant"],["2027-03-06T05:40","ascendant"],["2027-03-19T14:06","descendant"],["2027-04-02T12:16","ascendant"],["2027-04-15T18:31","descendant"],["2027-04-29T15:23","ascendant"],["2027-05-12T19:03","descendant"],["2027-05-26T17:20","ascendant"],["2027-06-08T21:23","descendant"],["2027-06-22T20:25","ascendant"],["2027-07-06T04:15","descendant"],["2027-07-20T01:33","ascendant"],["2027-08-02T14:34","descendant"],["2027-08-16T07:48","ascendant"],["2027-08-30T01:01","descendant"],["2027-09-12T13:25","ascendant"],["2027-09-26T08:03","descendant"],["2027-10-09T16:57","ascendant"],["2027-10-23T10:14","descendant"],["2027-11-05T17:53","ascendant"],["2027-11-19T09:33","descendant"],["2027-12-02T20:37","ascendant"],["2027-12-16T13:19","descendant"],["2027-12-30T01:50","ascendant"],["2028-01-12T22:26","descendant"],["2028-01-26T08:30","ascendant"],["2028-02-09T09:56","descendant"],["2028-02-22T14:10","ascendant"]],"a":[["2026-07-13T09:50","perigee"],["2026-07-25T18:37","apogee"],["2026-08-10T13:10","perigee"],["2026-08-22T10:16","apogee"],["2026-09-06T22:34","perigee"],["2026-09-19T05:00","apogee"],["2026-10-01T22:59","perigee"],["2026-10-17T00:58","apogee"],["2026-10-28T19:13","perigee"],["2026-11-13T18:57","apogee"],["2026-11-25T22:08","perigee"],["2026-12-11T07:58","apogee"],["2026-12-24T09:37","perigee"],["2027-01-07T09:24","apogee"],["2027-01-21T22:54","perigee"],["2027-02-03T14:41","apogee"],["2027-02-19T08:38","perigee"],["2027-03-03T06:45","apogee"],["2027-03-19T05:36","perigee"],["2027-03-31T03:34","apogee"],["2027-04-14T02:36","perigee"],["2027-04-27T23:20","apogee"],["2027-05-09T22:00","perigee"],["2027-05-25T17:08","apogee"],["2027-06-06T16:46","perigee"],["2027-06-22T06:57","apogee"],["2027-07-04T22:48","perigee"],["2027-07-19T13:36","apogee"],["2027-08-02T08:18","perigee"],["2027-08-15T16:08","apogee"],["2027-08-30T17:34","perigee"],["2027-09-12T01:29","apogee"],["2027-09-27T22:03","perigee"],["2027-10-09T17:43","apogee"],["2027-10-25T07:26","perigee"],["2027-11-06T12:37","apogee"],["2027-11-19T01:18","perigee"],["2027-12-04T09:44","apogee"],["2027-12-16T03:33","perigee"],["2028-01-01T04:59","apogee"],["2028-01-13T08:52","perigee"],["2028-01-28T16:45","apogee"],["2028-02-10T21:01","perigee"],["2028-02-24T17:44","apogee"]]};
 
-const $=s=>document.querySelector(s);
-let qty={}, horsTarif=[], colFilter="";
+const TYPE = {Ari:'fruit',Leo:'fruit',Sgr:'fruit', Tau:'racine',Vir:'racine',Cap:'racine',
+              Gem:'fleur',Lib:'fleur',Aqr:'fleur', Cnc:'feuille',Sco:'feuille',Oph:'feuille',Psc:'feuille'};
+const NOM  = {Ari:'Bélier',Tau:'Taureau',Gem:'Gémeaux',Cnc:'Cancer',Leo:'Lion',Vir:'Vierge',Lib:'Balance',
+              Sco:'Scorpion',Oph:'Serpentaire',Sgr:'Sagittaire',Cap:'Capricorne',Aqr:'Verseau',Psc:'Poissons'};
+const LIB  = {fruit:'Fruit',fleur:'Fleur',feuille:'Feuille',racine:'Racine'};
+const TEINTE = {fruit:'var(--bordeaux)',fleur:'var(--violet)',feuille:'var(--green)',racine:'var(--ocre)'};
+const FOND   = {fruit:'var(--bordeaux-light)',fleur:'var(--violet-light)',feuille:'var(--green-light)',racine:'var(--ocre-light)'};
+const JOURS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+const MOIS  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 
-const agentSel=$("#agent");
-AGENTS.forEach(a=>{const o=document.createElement("option");o.value=a.code;o.textContent=a.nom+" ("+a.code+")";agentSel.appendChild(o);});
-const CODE_AUTRE="AUT";
-(function(){const o=document.createElement("option");o.value=CODE_AUTRE;o.textContent="Absent de la liste — renseigner mon identité";agentSel.appendChild(o);})();
+// Les horodatages du jeu de données sont en heure de Paris, sans fuseau : on les lit comme des dates locales.
+const lire = s => { const [d,h] = s.split('T'); const [Y,M,D] = d.split('-').map(Number); const [hh,mm] = h.split(':').map(Number);
+                    return new Date(Y, M-1, D, hh, mm); };
+const TR = LUN.t.map(([t,c]) => ({t: lire(t), c}));
+const EV = [...LUN.n.map(([t,k]) => ({t: lire(t), k, f: k === 'ascendant' ? 'Nœud ascendant' : 'Nœud descendant'})),
+            ...LUN.a.map(([t,k]) => ({t: lire(t), k, f: k === 'perigee' ? 'Périgée' : 'Apogée'}))];
+const hhmm = d => String(d.getHours()).padStart(2,'0') + 'h' + String(d.getMinutes()).padStart(2,'0');
 
-const blocAutre=$("#bloc_autre");
-const champsAutre=()=>({prenom:$("#a_prenom").value.trim(),nom:$("#a_nom").value.trim(),mail:$("#a_mail").value.trim()});
-const mailValide=v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-function autreComplet(){const c=champsAutre();return !!(c.prenom&&c.nom&&mailValide(c.mail));}
-function agentPret(){return agentSel.value===CODE_AUTRE?autreComplet():!!agentSel.value;}
-function agentCourant(){
-  if(agentSel.value!==CODE_AUTRE) return AGENTS.find(a=>a.code===agentSel.value);
-  const c=champsAutre();
-  return {code:CODE_AUTRE, nom:(c.prenom+" "+c.nom).trim(), mail:c.mail, horsListe:true};
-}
-function majBlocAutre(){
-  const actif=agentSel.value===CODE_AUTRE;
-  blocAutre.hidden=!actif;
-  if(!actif)["#a_prenom","#a_nom","#a_mail"].forEach(s=>$(s).classList.remove("needsel"));
-}
-["#a_prenom","#a_nom","#a_mail"].forEach(s=>$(s).addEventListener("input",()=>{$(s).classList.remove("needsel");updateTot();}));
-const regSel=$("#regionfilter");
-const fourSel=$("#fourfilter");
-(function(){
-  // Le mois reste modifiable — un relevé de fin de mois se saisit souvent début du mois suivant —
-  // mais borné aux deux mois écoulés : plus d'erreur de frappe sur l'année.
-  const m=$("#mois"), now=new Date();
-  const ym=d=>d.toISOString().slice(0,7);
-  const recule=n=>{const d=new Date(now.getFullYear(), now.getMonth()-n, 1);return ym(d);};
-  m.value=ym(now); m.max=ym(now); m.min=recule(2);
-})();
+function constA(d){ let c = LUN.c0; for (const x of TR){ if (x.t <= d) c = x.c; else break; } return c; }
 
-
-// ---------------------------------------------------------------
-// Synchronisation avec le tarif VINOM.
-// tarif.json est servi par le même domaine : lecture directe, sans serveur.
-// Le n° de fournisseur se déduit des 3 premiers chiffres du code article
-// (règle vérifiée sur 99,2 % des articles Vinistoria) ; EXC_FOURN liste
-// les articles qui y échappent.
-// ---------------------------------------------------------------
-const TARIF_URL = "../vinom-tarif/tarif.json";
-const NOMS_FOURN = {"389":"A BICYCLETTE SELECTION","376":"AGENCE CHANLAIRE & REYNIES","532":"AIKAN WHISKY","153":"ALTO","684":"AMAURY ET AURORE DEVILLARD","686":"AMPEVINO","634":"ANGEL WINE","564":"ANTOINE GRANDS CRUS","502":"APERO CHEERS","572":"ARTHUR LEGRAS","180":"AUBAI MEMA","109":"AUJOUX DEPAGNEUX","536":"BADET CLEMENT","624":"BALLANDE & MENERET","599":"BARON ALBERT","664":"BENOIT BADOZ","105":"BIMONT-DOMAINE DES GUYONS","173":"BOLLINGER DIFFUSION","665":"BONNIE & CLYDE","545":"BOURGOGNE DE VIGNE EN VERRE","620":"BPC WINE MERCHANT","668":"BUVONS - ULYSSE CAZABONNE","655":"C&C FRANCE (DOURTHE - CANARD DUCHêNE)","630":"CALMEL & JOSEPH","182":"CAMPARI FRANCE DISTRIBUTION","712":"CARRIèRE PRADAL","584":"CAVE D'IROULEGUY","287":"CAVE YVES CUILLERON","372":"CAVIAR DE NEUVIC","657":"CAVISTE CONFIDENTIEL","575":"CELLIER DE LA CRAU","336":"CHAMPAGNE BAUDRY","369":"CHAMPAGNE CHARLES HEIDSIECK","323":"CHAMPAGNE DRAPPIER","301":"CHAMPAGNE DUVAL-LEROY","379":"CHAMPAGNE JACQUESSON","612":"CHAMPAGNE LECLERC BRIANT","552":"CHAMPAGNE MOUTARD","352":"CHAMPAGNE PALMER & CO","606":"CHAMPAGNE VIRGINIE T","496":"CHANOINE FRERES","719":"CHANPAGNE EPC","430":"CHARLES MIGNON","637":"CHARTREUSE DIFFUSION","436":"CHATEAU ASTROS","103":"CHATEAU BARBEBELLE","580":"CHATEAU BARREJAT","453":"CHATEAU CADEAUX","504":"CHATEAU CANTINOT","222":"CHATEAU CORTON C.","384":"CHATEAU D'ESTOUBLON","601":"CHATEAU DE CAZENEUVE","108":"CHATEAU DE CHANTEGRIVE","677":"CHATEAU DE LANDIRAS","520":"CHATEAU DE LASTOURS","595":"CHATEAU DE POMMARD","445":"CHATEAU DE REIGNAC","480":"CHATEAU DE RESPIDE","591":"CHÂTEAU DE SAURS","676":"CHATEAU DES REVES","581":"CHATEAU EUGENIE","512":"CHATEAU FONSALADE","558":"CHATEAU FUISSE","185":"CHATEAU LA LAGUNE","540":"CHATEAU LA TOUR DE BY","119":"CHATEAU LEOUBE","658":"CHATEAU PEYREPERTUSE","275":"CHATEAU PUECH-HAUT","548":"CHATEAU RICARDELLE","135":"CHATEAU SAINT MARTIN","313":"CHATEAU SAINTE MARGUERITE","312":"CHATEAU SAINTE ROSELINE","397":"CHATEAU SIMONE","206":"CHATEAU VANNIERES","307":"CHERRIER FRERES","132":"CHEVAL QUANCARD","629":"CHEZ FRED","714":"CHILLER CONCEPT","178":"CIE MEDOCAINE DES GRANDS CRUS ACHAT","145":"CIE MEDOCAINE DES GRANDS CRUS MAD","399":"CLOS DE LA COULEE DE SERRANT","592":"CLOS DES NINES","598":"CLOS DES VINS D'AMOUR","311":"COMMANDERIE DE PEYRASSOL","509":"CONFIDENTIAL SPIRITS","302":"CONNAISSEURS CLUB","603":"CORAVIN EUROPE B.V","631":"COSTIERES WINE & SPIRITS","441":"DANIEL COMBIN DISTRIBUTION","455":"DANIEL ETIENNE DEFAIX","187":"DE LADOUCETTE","111":"DE VENOGE - CHAMPAGNE","585":"DER WEINHANDEL","623":"DESCAS PERE & FILS","110":"DEUTZ DELAS DIFFUSION","398":"DOMAINE ALAIN BURGUET","415":"DOMAINE ALAIN GRAILLOT","679":"DOMAINE ALEXIS DE BENOIST","666":"DOMAINE ARNOUX","613":"DOMAINE ASPRAS","537":"DOMAINE BOEHLER","649":"DOMAINE BORDENAVE","428":"DOMAINE BRUNO CLAIR","722":"DOMAINE CHIROULET","456":"DOMAINE COLLET","400":"DOMAINE COMBIER","683":"DOMAINE D'ARDHUY","388":"DOMAINE DE L'ARLOT","651":"DOMAINE DE LA BEGUDE","674":"DOMAINE DE LA CENDRILLON","373":"DOMAINE DE LA GRANDE SIESTE","402":"DOMAINE DE LA JANASSE","404":"DOMAINE DE LA MORDOREE","129":"DOMAINE DE LA PALEINE SAS","394":"DOMAINE DE LA VOUGERAIE","675":"DOMAINE DE METIFIOT","409":"DOMAINE DE MONTILLE","463":"DOMAINE DE PEGAU","450":"DOMAINE DE SERRES","401":"DOMAINE DE TREVALLON","538":"DOMAINE DE VENUS","408":"DOMAINE DE VILLAINE","407":"DOMAINE DES COMTES LAFON","216":"DOMAINE DES GRANDS FERS","244":"DOMAINE DU CHATEAU DE MEURSAULT","434":"DOMAINE DU CLOS DE TART","573":"DOMAINE DU PHENIX","678":"DOMAINE DU RHODES","335":"DOMAINE DU VIEUX TELEGRAPHE","359":"DOMAINE FAIVELEY","147":"DOMAINE FILLIATREAU","113":"DOMAINE GAUTHERON","464":"DOMAINE GAYDA","163":"DOMAINE GEORGES VERNAY","475":"DOMAINE HENRI GIRAUD","412":"DOMAINE JACQUES PRIEUR","267":"DOMAINE LA BOUCHE DU ROI","617":"DOMAINE LA GUINTRANDY","602":"DOMAINE LA PART DES ANGES","417":"DOMAINE LE SANG DES CAILLOUX","487":"DOMAINE LES CAIZERGUES","424":"DOMAINE MARCEL DEISS","188":"DOMAINE MARCEL RICHAUD","639":"DOMAINE MARQUESTAU","177":"DOMAINE MAS FOULAQUIER","308":"DOMAINE MONTROSE","544":"DOMAINE MOURIER VINS","553":"DOMAINE MOUTARD DILIGENT","405":"DOMAINE OSTERTAG","406":"DOMAINE PAVELOT","461":"DOMAINE ROGER BELLAND","423":"DOMAINE ROLET","636":"DOMAINE ROULOT","491":"DOMAINE SAINT ROMAIN","117":"DOMAINE SERGE LALOUE","133":"DOMAINE TARIQUET","421":"DOMAINE TEMPIER","570":"DOMAINE TOUR BOISEE","387":"DOMAINE VACHERON","648":"DOMAINE VINCENTI","527":"DOMAINES LANDRON","511":"DOMAINES MAISONS & CHATEAUX","150":"DOMAINES PAUL JABOULET AINE","574":"DUMNACUS","205":"DYONISOS","215":"EB WINE SAS","706":"ECMOHO","587":"ELEANOR B.V","533":"ESTANDON","565":"EXCEL VINS","560":"FAMILLE AEGERTER","643":"FAMILLE CHERMETTE","160":"FAMILLE CROS-PUJOL","203":"FAMILLE PERRIN","663":"FAMILLE PIERRE GAILLARD","583":"FAMOUS WINES SELECT","478":"FIGUIERE","654":"FINE WINE FELLOWS","621":"FIWINE BORDEAUX","597":"FOOD Y VINO","183":"FOURNIER PERE ET FILS","721":"G-WINERY","653":"GATUMEL RESTAURATION","671":"GAVAISSON","165":"GDD1 - LES GOUTTES DE DIEU","605":"GDD2 - LES GOUTTES DE DIEU - LA CAVE","422":"GEANTET PANSIOT","193":"GEORGES VIGOUROUX","271":"GERARD BERTRAND","588":"GOELLAN SAS","121":"GRANDS VINS DU VIEUX MONDE - DOMAINE MALDANT","667":"GROSBOIS - DOMAINE DES HAUTS BAIGNEUX","661":"GUIGAL","120":"GUSTAVE LORENTZ","524":"HELFRICH","354":"HENRY MARIONNET","318":"HOMMES ET TERROIRS","614":"IL VINO","485":"JAJA RESTAURANT","413":"JEAN FOILLARD","578":"JEREMIE HUCHET","358":"JM BROCARD","157":"JOSEPH CARTRON","438":"JOSEPH MELLOT","550":"JOSEPH PERRIER KRESSMANN","646":"JS2D","508":"K'RIBEAN COCKTAIL","567":"L'ATELIER DU RHUM","501":"LA CAVE DE MEUDON","410":"LA CAVE DES ENTREPRENEURS","347":"LA CAVE DU MANET","616":"LA CAVE DU MOROS","542":"LA CHABLISIENNE","632":"LA COMPAGNIE DES VINS","594":"LA MAISON DE PETIT PIERRE","535":"LA MAISON DU WHISKY","521":"LA SOURCE DISTRIBUTION","277":"LAFAGE","633":"LAFERTE WHISKY","523":"LAPLACE","549":"LAURENT MIQUEL","452":"LAURENT PERRIER","315":"LDP - LIQUORISTERIE DE PROVENCE","444":"LE CHANT DES CAVES MAD","628":"LE CLUB DES MARQUES","562":"LE GOUT DU VIN","262":"LE JAS DES PAPES","607":"LE PARVIS REGALIA","432":"LE PETIT BERET","425":"LE PINARDIER","245":"LES CAPUCINS SAS ACHAT","246":"LES CAPUCINS SAS EX MAD","517":"LES CARMELS","680":"LES CAVES DU ROUSSILON","130":"LES DOMAINES PAUL MAS","386":"LES DOMAINES ROBERT VIC","416":"LES HERITIERS DU COMTE LAFON","385":"LES JULES","541":"LES VIGNERONS ARDECHOIS","242":"LES VIGNERONS D'AGHIONE","361":"LES VIGNERONS DE PUISSEGUIN LUSSAC SAINT EMILION","137":"LES VIGNERONS DE TUTIAC","619":"LES VINS BREBAN","566":"LES VINS DE PIERRE BOINET","184":"LES WHISKIES DU MONDE","468":"LOMBARD DISTRIBUTION","144":"LOUIS LATOUR ACHAT","100":"LOUIS MAX","118":"LUC LAPEYRE SAS","426":"LUXE CAPITAL DIFFUSION","439":"M. CHAPOUTIER","460":"MAHLER BESSE MAD","688":"MAISON AMBROISE","660":"MAISON BARRIERE","642":"MAISON BOCQUET","662":"MAISON BRUMENT","715":"MAISON CHAPE","319":"MAISON GABRIEL MEFFRE / BOISSET","534":"MAISON JEAN HUTTARD","207":"MAISON JEAN LORON","652":"MAISON L. TRAMIER & FILS","539":"MAISON LEDA - LAUBADE","154":"MAISON LOUIS JADOT","699":"MAISON LOUIS ROQUE","635":"MAISON QUERRE","192":"MAISON RIVIERE","641":"MAISON TRIMBACH","615":"MAISON VALENTIN PIQUEREAUX","525":"MAJORS/DOM","303":"MARC BREDIF","123":"MARRENON","579":"MAS AMIEL","516":"MAS CARLOT","437":"MAS DE DAUMAS GASSAC","210":"MESTREZAT ACHAT","241":"MESTREZAT MAD","218":"MHD FRANCE","638":"MIQUEL ARMENGOL CALSINA","231":"MONDIALE DES VINS SARL","220":"MONSIEUR CLINTON FERREIRA","126":"MOULIN DE LENE","321":"MRC","279":"OLIVIER BERTRAND DISTRIBUTION","451":"OLIVIER LEFLAIVE","107":"ORCHIDEES MAISONS DE VIN","672":"PAON PERCHE","240":"PARDELA WINES","626":"PARTNER VINS","559":"PAZAC","551":"PETER SOLBERG A/S","290":"PHILIPPONNAT","547":"PIERRE CHAVIN","482":"PIERRE FERRAUD & FILS","673":"PIERRE MIGNON","264":"PURE DISTILLED SPIRITS COMPANY LIMITED","645":"QUERCIA","159":"RAFFIN VINI","725":"RECEPTION TVD","349":"REGNARD","378":"REMOISSENET PERE & FILS","593":"ROBOREL DE CLIMENS","522":"ROGER GROULT","204":"ROUBINE","640":"ROUTE TO AFRICA","483":"SARL BRUANT DISTRIBUTION ACHAT","27":"SARL BRUANT DISTRIBUTION AGENT","225":"SARL CVC - COMPAGNIES DES VINS ET CHAMPAGNES","529":"SAS ZIO MARIO","189":"SBA - MVINS","577":"SCEA CHATEAU CARPE DIEM","650":"SEGUIN MANUEL","611":"SIMONNET FEBVRE","514":"SLS AMOR VINUM","647":"SOBER SPIRITS","543":"SOCIETE DES VINS DE PIZAY","390":"STEPHANE OGIER","596":"SUPREME VIN PARIS","608":"TALUAU","561":"TERRA PROVINCIA","618":"TERRES DE NATURES","309":"TERRES PLURIELLES","600":"THE RED CIRCLE","200":"THE WINE MERCHANT","622":"U'WINE","152":"V & V GODIER","507":"VEYRET LATOUR","510":"VIGNERONS ASSOCIES","449":"VIGNES DES ANDES","659":"VIGNOBLES ANDRE LURTON","266":"VIGNOBLES DUBARD","331":"VIGNOBLES LORGERIL","127":"VIGNOBLES MOURAT SAS","325":"VIN DE PANAME","317":"VIN.H.VIN","148":"VINI BE GOOD","506":"VINIS MARCHAND DE VIS","689":"VINITERROIRS","143":"VINODIXVINS GIE","141":"VINOM SARL","571":"VINOPTIMO","576":"VINOVALIE","604":"VINOVEST INC","670":"VINS & VIGNERONS","627":"VINS FINS BY NISIMA","454":"VINS JEAN LUC COLOMBO","609":"WINE AROUND","166":"WINE TRACKERS","528":"Y.AMIRAULT","396":"YANN CHAVE","282":"AD VINI","374":"ADRIEN VACHER DISTRIBUTION","644":"ANDREAS OSTER WEINKELLEREI KG","708":"BACCHUS-VINOTHEK","692":"BARRERE & CAPDEVIELLE","497":"BAUDRY ET DUTOUR","469":"BOISSET","690":"BONTE DI VINO","716":"BUVONS - CHARLES HEIDSIECK SELECTION","698":"CHAMPAGNE CATTIER","252":"CHAMPAGNE GOSSET","717":"CHAMPAGNE ROMAIN TRIBAUT","696":"CHASSENAY D'ARCE","268":"CHATEAU SIPIAN","656":"CLOS BAGATELLE","687":"CLOS REGAIN","695":"COHOLA","713":"DIVA BORDEAUX","420":"DOMAINE DE LA POUSSE D'OR","694":"DOMAINE DELAUNAY","276":"DOMAINE DU CHATEAU DE MARSANNAY","503":"DOMAINE FOURREY","285":"DOMAINE GAUTHERON","724":"DOMAINE MAESTRACCI","723":"DOMAINE ORENGA DE GAFFORY","589":"DVP","590":"EDOUARD DELAUNAY","519":"F.VESSIER CONSULTING","466":"JEFF CARREL","272":"KUNDRAT & FILS","515":"LE CHANT DES CAVES ACHAT","294":"LEOUBE DISTRIBUTION","470":"LES CHAIS DU SUD","250":"LOUIS LATOUR","251":"MAHLER BESSE ACHAT","498":"MAISON BOUEY","414":"MAISON DE MONTILLE","362":"MC GREGGOR OPPORTUNITY","278":"MDCV CHATEAU & VIGNOBLES EN PROVENCE","273":"SAS MOISANS INTERNATIONAL BEVERAGE","700":"SPIEGELAU RAVINET D'ARC","711":"SPIRIBAM","500":"VIA CARITATIS","691":"VINI BE GOOD - VIA BUVONS","411":"YANN CHAVE","488":"LES 2 PALAIS","155":"BENOIT BRUMENT VINS","431":"CAMRAF","433":"CHAMPAGNE BESSERAT DE BELLEFON","284":"CLOS BELLANE","489":"CLOVIS LESIEUTRE & CIE","443":"DANIELE GERAULT","429":"DRAGONSHARK WINE AND SPIRITS","486":"FILIPS WINE","247":"JOSEPH DROUHIN","138":"LES DOMAINES DU MONT","435":"MAISON WINETED","158":"PATRICK FONT","418":"SARL LES MAINS ROUGES","254":"VRANKEN POMMERY MONOPOLE"};
-const EXC_FOURN  = {"21801024":605,"BDRCHE24":267,"BALMER23":267,"165260NM":110,"165259NM":110,"BDRPN24":267,"BALCHA23":267,"16525914":369,"14400523":250,"BDRCHA23":267,"WPJP18":267,"21001214":241,"578999FT":252,"577999FT":252,"24500120DA":178,"14400121":250,"BALMN22":267,"BALPNV22":267,"BALCHAM22":267,"BDRMER22":267,"BDRCF22":267,"490003NM":174,"16525907":369,"165063NM":110,"165009NM":110,"165008NM":110,"X0449":109};
-const COUL_TARIF = {rouge:"Rouge", blanc:"Blanc", bulles:"Bulles", rose:"Rosé", spiritueux:"Spiritueux"};
-
-function nfDuCode(code){
-  const c = String(code);
-  if (EXC_FOURN[c] !== undefined) return EXC_FOURN[c];
-  return /^\d{3}/.test(c) ? parseInt(c.slice(0,3), 10) : 0;
-}
-function libelleTarif(i){
-  const des = String(i.cuvee || i.domaine || i.appellation || "").trim();
-  const fmt = String(i.format_label || "").trim();
-  if (!fmt || fmt === "75cl") return des;
-  const plat = s => s.toLowerCase().replace(/[^a-z0-9]/g, "");
-  if (plat(des).includes(plat(fmt))) return des;
-  if (fmt === "150cl" && /magnum/i.test(des)) return des;
-  return des + " — " + fmt;
-}
-function versReference(i){
-  const nf = nfDuCode(i.id);
-  return {code:String(i.id), des:libelleTarif(i), dom:i.domaine || "", app:i.appellation || "",
-          coul:COUL_TARIF[i.couleur] || i.couleur, nf:nf,
-          four:NOMS_FOURN[nf] || "FOURNISSEUR NON RENSEIGNÉ", reg:i.region};
-}
-function remplirSelects(){
-  const reg = regSel.value, four = fourSel.value;
-  regSel.innerHTML = '<option value="">Toutes les régions</option>';
-  REGION_ORDER.filter(r => REFERENCES.some(x => x.reg === r))
-    .forEach(r => { const o = document.createElement("option"); o.value = r; o.textContent = r; regSel.appendChild(o); });
-  fourSel.innerHTML = '<option value="">Tous les domaines</option>';
-  [...new Set(REFERENCES.map(r => r.four).filter(Boolean))].sort()
-    .forEach(f => { const o = document.createElement("option"); o.value = f; o.textContent = f; fourSel.appendChild(o); });
-  if ([...regSel.options].some(o => o.value === reg))   regSel.value = reg;
-  if ([...fourSel.options].some(o => o.value === four)) fourSel.value = four;
-}
-function majBandeau(txt, alerte){
-  const el = $("#majcat"); if(!el) return;
-  el.textContent = txt; el.hidden = false;
-  el.classList.toggle("alerte", !!alerte);
-}
-async function synchroniserTarif(){
-  try{
-    const r = await fetch(TARIF_URL, {cache:"no-cache"});
-    if(!r.ok) throw new Error("HTTP " + r.status);
-    const d = await r.json();
-    if(!d || !Array.isArray(d.items) || d.items.length < 50) throw new Error("tarif illisible");
-    REFERENCES = d.items.map(versReference);
-    remplirSelects(); render(); updateTot();
-    const maj = (d.meta && d.meta.date_maj) ? d.meta.date_maj.split("-").reverse().join("/") : "";
-    majBandeau(REFERENCES.length + " références · tarif du " + maj, false);
-  }catch(e){
-    majBandeau("Catalogue hors ligne du 24/08/2026 — le tarif n'a pas pu être relu.", true);
+function segments(jour){
+  const fin = new Date(jour.getFullYear(), jour.getMonth(), jour.getDate()+1);
+  const bruts = [{debut: jour, c: constA(jour)}];
+  for (const x of TR) if (x.t > jour && x.t < fin) bruts.push({debut: x.t, c: x.c});
+  // On ne garde comme rupture qu'un changement de TYPE : passer du Scorpion
+  // au Serpentaire reste un jour feuille, inutile de l'afficher.
+  const segs = [];
+  for (const s of bruts){
+    const t = TYPE[s.c];
+    if (segs.length && segs[segs.length-1].type === t) continue;
+    segs.push({debut: s.debut, c: s.c, type: t});
   }
+  segs.forEach((s, i) => { s.fin = (i+1 < segs.length) ? segs[i+1].debut : fin;
+                           s.duree = s.fin - s.debut; });
+  return segs;
 }
 
-function draftKey(){return "vinom_ech_"+(agentSel.value||"?")+"_"+$("#mois").value;}
-function saveDraft(){try{localStorage.setItem(draftKey(),JSON.stringify({qty,horsTarif}));}catch(e){}}
-function loadDraft(){try{const d=JSON.parse(localStorage.getItem(draftKey())||"{}");qty=d.qty||{};horsTarif=d.horsTarif||[];}catch(e){qty={};horsTarif=[];}}
+function evenements(jour){
+  const fin = new Date(jour.getFullYear(), jour.getMonth(), jour.getDate()+1);
+  return EV.filter(e => e.t >= jour && e.t < fin);
+}
 
-function matches(r){
-  if(colFilter&&r.coul!==colFilter)return false;
-  if(regSel.value&&r.reg!==regSel.value)return false;
-  if(fourSel.value&&r.four!==fourSel.value)return false;
-  const q=$("#q").value.trim().toLowerCase();
-  if(q){const hay=(r.des+" "+r.dom+" "+r.app+" "+r.four+" "+r.code+" "+r.reg).toLowerCase();if(!hay.includes(q))return false;}
-  return true;
-}
-function render(){
-  const htl=$("#htlist");htl.innerHTML="";
-  horsTarif.forEach((h,i)=>{
-    const d=document.createElement("div");d.className="ht";
-    d.innerHTML=`<div><div class="des">${esc(h.des)}</div><small>Hors tarif${h.four?" · "+esc(h.four):""} · ${h.qte} bt</small></div>`;
-    const b=document.createElement("button");b.className="btn btn-ghost";b.textContent="Retirer";
-    b.onclick=()=>{horsTarif.splice(i,1);saveDraft();render();updateTot();};
-    d.appendChild(b);htl.appendChild(d);
-  });
-  const list=$("#list");list.innerHTML="";
-  const shown=REFERENCES.filter(matches);
-  if(!shown.length){list.innerHTML=`<div class="empty">Aucune référence ne correspond.<br>Élargissez la recherche ou ajoutez une référence hors tarif.</div>`;return;}
-  // groupe région -> domaine
-  const byReg={};
-  shown.forEach(r=>{(byReg[r.reg] ||= {}); (byReg[r.reg][r.four||"—"] ||= []).push(r);});
-  REGION_ORDER.filter(r=>byReg[r]).forEach(reg=>{
-    const secR=document.createElement("div");secR.className="region";
-    const nb=Object.values(byReg[reg]).reduce((s,a)=>s+a.length,0);
-    const took=Object.values(byReg[reg]).flat().reduce((s,r)=>s+(qty[r.code]||0),0);
-    secR.innerHTML=`<h2>${esc(reg)} <span>${nb} réf.${took?" · "+took+" bt":""}</span></h2>`;
-    Object.keys(byReg[reg]).sort().forEach(f=>{
-      const dg=document.createElement("div");dg.className="dom";
-      const t2=byReg[reg][f].reduce((s,r)=>s+(qty[r.code]||0),0);
-      dg.innerHTML=`<h3>${esc(f)} <span>${byReg[reg][f].length} réf.${t2?" · "+t2+" bt":""}</span></h3>`;
-      byReg[reg][f].forEach(r=>dg.appendChild(refRow(r)));
-      secR.appendChild(dg);
-    });
-    list.appendChild(secR);
-  });
-}
-function refRow(r){
-  const n=qty[r.code]||0;
-  const el=document.createElement("div");el.className="ref"+(n?" has":"");
-  el.innerHTML=`<div class="info"><div class="des"><span class="dot d-${r.coul}"></span>${esc(r.des)}</div>
-    <div class="sub">${esc(r.app||"")}</div><div class="code">${esc(r.code)}</div></div>`;
-  const st=document.createElement("div");st.className="step"+(n?" act":"");
-  const minus=mk("button","−"),inp=document.createElement("input"),plus=mk("button","+");
-  inp.type="number";inp.min="0";inp.value=n;inp.inputMode="numeric";
-  minus.onclick=()=>setQ(r.code,(qty[r.code]||0)-1);
-  plus.onclick=()=>setQ(r.code,(qty[r.code]||0)+1);
-  inp.onchange=()=>setQ(r.code,parseInt(inp.value||"0",10));
-  st.append(minus,inp,plus);el.appendChild(st);return el;
-}
-function mk(t,x){const e=document.createElement(t);e.textContent=x;return e;}
-function esc(s){return(s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
-function setQ(code,v){v=Math.max(0,v|0);if(v)qty[code]=v;else delete qty[code];saveDraft();render();updateTot();}
-function totals(){const bt=Object.values(qty).reduce((a,b)=>a+b,0)+horsTarif.reduce((a,h)=>a+h.qte,0);return{bt,refs:Object.keys(qty).length+horsTarif.length};}
-function updateTot(){const{bt,refs}=totals();$("#totbt").textContent=bt;$("#totref").textContent=refs;$("#validate").disabled=!(bt>0&&agentPret());}
+const aujourdhui = new Date(); aujourdhui.setHours(0,0,0,0);
+const decalage = (aujourdhui.getDay() + 6) % 7;              // lundi = 0
+const lundi = new Date(aujourdhui); lundi.setDate(lundi.getDate() - decalage);
 
-$("#q").oninput=render;regSel.onchange=render;fourSel.onchange=render;
-$("#chips").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;document.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));c.classList.add("on");colFilter=c.dataset.c;render();};
-agentSel.onchange=()=>{majBlocAutre();loadDraft();render();updateTot();agentSel.classList.remove("needsel");};
-$("#mois").onchange=()=>{loadDraft();render();updateTot();};
-let minuteurAnnul=null;
-$("#reset").onclick=()=>{
-  const{bt,refs}=totals();
-  if(!bt){return;}
-  const sauvegarde={qty:{...qty}, horsTarif:horsTarif.map(h=>({...h}))};
-  qty={};horsTarif=[];saveDraft();render();updateTot();
-  afficherAnnulation(sauvegarde, bt, refs);
-};
-function afficherAnnulation(sauvegarde, bt, refs){
-  masquerAnnulation();
-  const bar=document.createElement("div");bar.className="annuler";bar.id="barreannul";
-  bar.innerHTML='<span>Relevé vidé — '+bt+' bouteille(s), '+refs+' référence(s).</span>';
-  const b=document.createElement("button");b.textContent="Annuler";
-  b.onclick=()=>{qty=sauvegarde.qty;horsTarif=sauvegarde.horsTarif;saveDraft();render();updateTot();masquerAnnulation();};
-  bar.appendChild(b);document.body.appendChild(bar);
-  minuteurAnnul=setTimeout(masquerAnnulation, 12000);
+// --- pastille d'en-tête : le type en vigueur à l'instant présent ---
+const maintenant = new Date();
+const cNow = constA(maintenant), tNow = TYPE[cNow];
+if (tNow){
+  const chip = document.getElementById('chip');
+  document.getElementById('chip-pastille').style.background = TEINTE[tNow];
+  document.getElementById('chip-type').textContent = 'Jour ' + LIB[tNow].toLowerCase();
+  document.getElementById('chip-const').textContent = '· Lune en ' + NOM[cNow];
+  document.getElementById('chip-date').textContent = JOURS[decalage] + ' ' + aujourdhui.getDate() + ' ' + MOIS[aujourdhui.getMonth()];
+  chip.hidden = false;
 }
-function masquerAnnulation(){
-  if(minuteurAnnul){clearTimeout(minuteurAnnul);minuteurAnnul=null;}
-  const b=$("#barreannul"); if(b) b.remove();
-}
-const dlgHT=$("#dlgHT");
-$("#addht").onclick=()=>{$("#ht_des").value="";$("#ht_four").value="";$("#ht_qte").value=1;dlgHT.showModal();};
-$("#ht_cancel").onclick=()=>dlgHT.close();
-$("#ht_add").onclick=()=>{const des=$("#ht_des").value.trim();const qv=parseInt($("#ht_qte").value||"0",10);
-  if(!des||qv<1){alert("Indiquez au moins la désignation et une quantité.");return;}
-  horsTarif.push({des,four:$("#ht_four").value.trim(),qte:qv});dlgHT.close();saveDraft();render();updateTot();};
 
-function buildLines(agent,mois){
-  const lines=[];
-  REFERENCES.forEach(r=>{const n=qty[r.code];if(n)lines.push({mois,agent:agent.code,agentNom:agent.nom,region:r.reg,nf:r.nf,four:r.four,code:r.code,
-    article:(r.des+" – "+(r.app||"")+" – "+r.coul).replace(/ –  –/g," –"),coul:r.coul,qte:n,horsTarif:false});});
-  horsTarif.forEach(h=>lines.push({mois,agent:agent.code,agentNom:agent.nom,region:"",nf:"",four:h.four||"(hors tarif)",code:"",article:h.des,coul:"",qte:h.qte,horsTarif:true}));
-  lines.sort((a,b)=>(a.four||"zzz").localeCompare(b.four||"zzz")||a.article.localeCompare(b.article));
-  return lines;
-}
-$("#validate").onclick=async ()=>{
-  if(!agentSel.value){agentSel.classList.add("needsel");agentSel.focus();return;}
-  if(agentSel.value===CODE_AUTRE&&!autreComplet()){
-    const c=champsAutre();
-    if(!c.prenom)$("#a_prenom").classList.add("needsel");
-    if(!c.nom)$("#a_nom").classList.add("needsel");
-    if(!mailValide(c.mail))$("#a_mail").classList.add("needsel");
-    ($("#a_prenom").classList.contains("needsel")?$("#a_prenom"):
-     $("#a_nom").classList.contains("needsel")?$("#a_nom"):$("#a_mail")).focus();
-    return;
+// --- bandeau de la semaine ---
+const dimanche = new Date(lundi); dimanche.setDate(dimanche.getDate()+6);
+document.getElementById('sem-plage').textContent =
+  'Du ' + lundi.getDate() + ' ' + MOIS[lundi.getMonth()] + ' au ' + dimanche.getDate() + ' ' + MOIS[dimanche.getMonth()] + ' ' + dimanche.getFullYear();
+
+const hote = document.getElementById('jours');
+for (let i = 0; i < 7; i++){
+  const j = new Date(lundi); j.setDate(j.getDate()+i);
+  const segs = segments(j), evs = evenements(j);
+  // Le caractère du jour = le type qui occupe le plus d'heures, pas celui de minuit.
+  const dominant = segs.reduce((a, b) => b.duree > a.duree ? b : a);
+  const principal = dominant.type;
+  const el = document.createElement('div');
+  el.className = 'jour' + (j.getTime() === aujourdhui.getTime() ? ' today' : '');
+  el.style.setProperty('--teinte', TEINTE[principal]);
+  el.style.setProperty('--fond', j.getTime() === aujourdhui.getTime() ? FOND[principal] : 'transparent');
+
+  let html = '<span class="jn">' + JOURS[i] + '</span>'
+           + '<span class="jd">' + j.getDate() + '</span>'
+           + '<span class="type">' + LIB[principal] + '</span>'
+           + '<span class="const">Lune en ' + NOM[dominant.c] + '</span>';
+  for (const s of segs){
+    if (s === dominant) continue;
+    html += '<span class="bascule">' + LIB[s.type]
+          + (s.debut < dominant.debut ? ' jusqu\'à ' + hhmm(s.fin) : ' à partir de ' + hhmm(s.debut))
+          + '</span>';
   }
-  const agent=agentCourant(),mois=$("#mois").value;
-  const lines=buildLines(agent,mois);
-  if(!lines.length){return;}
-  ouvrirRecap(agent,mois,lines);
-};
-
-// Récapitulatif : rien ne part tant que l'agent n'a pas confirmé.
-function ouvrirRecap(agent,mois,lines){
-  const{bt,refs}=totals();
-  const[an,mo]=mois.split("-");
-  const MOIS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
-  $("#rc_sous").textContent=agent.nom+" · relevé de "+MOIS[parseInt(mo,10)-1]+" "+an;
-  const corps=$("#rc_corps");corps.innerHTML="";
-  let four=null;
-  lines.forEach(l=>{
-    if(l.four!==four){four=l.four;
-      const t=document.createElement("div");t.className="rc-four";t.textContent=four;corps.appendChild(t);}
-    const d=document.createElement("div");d.className="rc-lig"+(l.horsTarif?" rc-ht":"");
-    const g=document.createElement("div");g.className="rc-des";
-    // article = « désignation – appellation – couleur » ; l'appellation lève l'ambiguïté
-    // quand le tarif n'a pas de nom de cuvée et retombe sur le nom du domaine.
-    const parts=l.article.split(" – ");
-    g.textContent=parts[0];
-    if(!l.horsTarif){const s=document.createElement("span");s.className="rc-app";
-      const app=parts.length>2?parts[1]:"";
-      s.textContent=[app,l.code,l.coul].filter(Boolean).join(" · ");g.appendChild(s);}
-    const q=document.createElement("div");q.className="rc-qte";q.textContent=l.qte+" bt";
-    d.appendChild(g);d.appendChild(q);corps.appendChild(d);
-  });
-  $("#rc_total").textContent=bt+" bouteille(s) · "+refs+" référence(s)";
-  $("#rc_edit").onclick=()=>$("#dlgRecap").close();
-  $("#rc_ok").onclick=()=>{$("#dlgRecap").close();envoyerReleve(agent,mois,lines);};
-  $("#dlgRecap").showModal();
+  for (const e of evs) html += '<span class="alerte">⚠ ' + e.f + ' à ' + hhmm(e.t) + '</span>';
+  el.innerHTML = html;
+  hote.appendChild(el);
 }
 
-async function envoyerReleve(agent,mois,lines){
-  if(CENTRAL){
-    $("#dlgSend").showModal();
-    let okSent=false;
-    try{
-      const res=await fetch(CONFIG.WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({mois,agent:agent.code,agentNom:agent.nom,agentMail:agent.mail||"",horsListe:!!agent.horsListe,date:new Date().toISOString(),lines})});
-      okSent=res.ok;
-    }catch(e){okSent=false;}
-    $("#dlgSend").close();
-    if(okSent){ clearDraft(); showSent(agent,mois); return; }
-    // repli si le serveur ne répond pas : on télécharge pour ne rien perdre
-    download(lines,nomFichier(agent,mois));
-    showFallback(agent,mois); return;
-  }
-  const fname=nomFichier(agent,mois);
-  download(lines,fname); clearDraft(); showAutonome(agent,mois,fname);
+if (aujourdhui < lire(LUN.d0) || aujourdhui > lire(LUN.d1)){
+  document.getElementById('sem-titre').textContent = 'Données lunaires à recalculer';
 }
-function nomFichier(agent,mois){
-  const suffixe=agent.horsListe?"_"+agent.nom.replace(/[^0-9A-Za-zÀ-ÿ]+/g,"-"):"";
-  return "Echantillons_"+agent.code+suffixe+"_"+mois+".xlsx";
-}
-function clearDraft(){try{localStorage.removeItem(draftKey());}catch(e){}}
-function download(lines,fname){
-  const rows=lines.map(l=>({"Mois":l.mois,"Agent":l.agent,"Région":l.region,"N° Fourn.":l.nf,"Domaine / Fournisseur":l.four,
-    "Référence":l.code,"Article":l.article,"Couleur":l.coul,"Qté prélevée":l.qte}));
-  if(window.XLSX){const ws=XLSX.utils.json_to_sheet(rows);ws["!cols"]=[{wch:8},{wch:7},{wch:20},{wch:9},{wch:30},{wch:12},{wch:50},{wch:9},{wch:12}];
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Échantillons");XLSX.writeFile(wb,fname);}
-  else{const head=Object.keys(rows[0]);const csv=[head.join(";")].concat(rows.map(r=>head.map(h=>'"'+String(r[h]).replace(/"/g,'""')+'"').join(";"))).join("\n");
-    const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname.replace(".xlsx",".csv");a.click();}
-}
-function resetForm(){qty={};horsTarif=[];render();updateTot();}
-function showSent(agent,mois){
-  $("#ok_title").textContent="Relevé envoyé ✓";
-  const{bt,refs}=totals();
-  $("#ok_msg").textContent=`${bt} bouteille(s), ${refs} référence(s) transmises. Yasmina recevra le fichier consolidé de tous les agents en fin de mois — rien d'autre à faire.`;
-  $("#ok_actions").innerHTML="";addBtn("Nouveau relevé","btn-blue",()=>{resetForm();$("#dlgOK").close();});
-  $("#dlgOK").showModal();
-}
-function showFallback(agent,mois){
-  $("#ok_title").textContent="Serveur injoignable";
-  $("#ok_msg").textContent="Le relevé n'a pas pu être envoyé (réseau ?). Le fichier a été téléchargé : envoyez-le à Yasmina, ou revalidez plus tard une fois connecté.";
-  $("#ok_actions").innerHTML="";
-  addBtn("Envoyer à Yasmina (e-mail)","btn-blue",()=>mailTo(agent,mois));
-  addBtn("Fermer","btn-ghost",()=>$("#dlgOK").close());
-  $("#dlgOK").showModal();
-}
-function showAutonome(agent,mois,fname){
-  $("#ok_title").textContent="Relevé validé";
-  const{bt,refs}=totals();
-  $("#ok_msg").textContent=`${bt} bouteille(s), ${refs} référence(s) — fichier « ${fname} » téléchargé.`;
-  $("#ok_actions").innerHTML="";
-  addBtn("Envoyer à Yasmina (e-mail)","btn-blue",()=>mailTo(agent,mois));
-  addBtn("Nouveau relevé","btn-ghost",()=>{resetForm();$("#dlgOK").close();});
-  $("#dlgOK").showModal();
-}
-function addBtn(txt,cls,fn){const b=document.createElement("button");b.className="btn "+cls;b.style.width="100%";b.textContent=txt;b.onclick=fn;$("#ok_actions").appendChild(b);}
-function mailTo(agent,mois){const{bt,refs}=totals();
-  const s=encodeURIComponent(`Échantillons GDD2 – ${agent.nom} – ${mois}`);
-  const b=encodeURIComponent(`Bonjour Yasmina,\n\nCi-joint le relevé des échantillons prélevés à GDD2 (${bt} bouteilles, ${refs} références).\nMerci de réclamer les avoirs aux domaines.\n\n(Ne pas oublier de joindre le fichier téléchargé.)\n\n${agent.nom}${agent.mail?" – "+agent.mail:""}`);
-  location.href=`mailto:${CONFIG.YASMINA_EMAIL}?subject=${s}&body=${b}`;}
-
-majBlocAutre();remplirSelects();render();updateTot();synchroniserTarif();
 </script>
 </body>
 </html>
