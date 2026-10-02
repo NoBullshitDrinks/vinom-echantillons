@@ -85,12 +85,14 @@ def build_agents():
     if not AGENTS_XLSX.exists(): return None
     a = pd.read_excel(AGENTS_XLSX, dtype=str).fillna("")
     a.columns = [str(c).strip() for c in a.columns]
+    def _clean(v): return str(v or "").replace("\xa0", " ").strip()
     out = []
     for _, x in a.iterrows():
-        code = str(x.get("Code", "")).strip()
-        nom  = str(x.get("Nom complet", "")).strip()
-        actif = str(x.get("Actif ?", "")).strip().lower()
-        if re.fullmatch(r"[A-Z]{3}", code) and code not in ("FRA", "OMB") and actif == "oui":
+        code = _clean(x.get("Code", ""))
+        nom  = _clean(x.get("Nom complet", ""))
+        actif = _clean(x.get("Actif ?", "")).lower()
+        # Tolérant : une case "Actif ?" vide = agent actif ; seul "non" exclut.
+        if re.fullmatch(r"[A-Z]{3}", code) and code not in ("FRA", "OMB") and actif != "non":
             out.append({"code": code, "nom": nom})
     return sorted(out, key=lambda x: x["nom"])
 
